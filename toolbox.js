@@ -9,8 +9,12 @@ class Toolbox {
     fill(0, 28, 255);
     rect(0, 0, 70, HEIGHT);
     if(this.tools.length > 0) {
+      var h = 1;
       for(var i = 0; i < this.tools.length; i++) {
-	image(this.tools[i].icon, 0, 0);
+	image(this.tools[i].icon, 2+34*(i % 3 == 0), h);
+	if(((i+1) % 2) == 0) {
+	  h += 32;
+	}
       }
     }
   }
@@ -19,13 +23,8 @@ class Toolbox {
     return false;
   }
 
-  addToolIcon(icon, name) {
-    // nothing yet
-    return false;
-  }
-
-  selectTool(name) {
-    return false;
+  selectTool(tool) {
+    this.selectedTool = tool;
   }
 
   addTool(tool) {
@@ -34,9 +33,8 @@ class Toolbox {
     }
 
     this.tools.push(tool);
-    this.addToolIcon(tool.icon, tool.name);
     if(this.selectedTool == null)
-      this.selectTool(tool.name);
+      this.selectTool(tool);
   }
 
 }
