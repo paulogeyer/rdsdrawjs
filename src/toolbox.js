@@ -11,7 +11,9 @@ class Toolbox {
     if(this.tools.length > 0) {
       var h = 1;
       for(var i = 0; i < this.tools.length; i++) {
-	image(this.tools[i].icon, 2+34*(i % 3 == 0), h);
+	                          // restart width after two tools
+	image(this.tools[i].icon, 2+34*((i+1) % 2 == 0), h);
+	// update height after two tools are draw
 	if(((i+1) % 2) == 0) {
 	  h += 32;
 	}

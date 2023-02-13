@@ -5,6 +5,8 @@ var WIDTH = 640;
 var HEIGHT = 480;
 
 function preload() {
+  fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
+
   toolbox = new Toolbox(ui);
   toolbox.addTool(new Rect());
   toolbox.addTool(new Rect3d());
@@ -19,4 +21,11 @@ function setup() {
 function draw() {
   background(0);
   toolbox.draw();
+
+  noStroke();
+  rect(0, HEIGHT-20, WIDTH, 20);
+  fill(255);
+  textFont(fontIBM);
+  text('RDSdrawJS V0.1 - (C) Paulo Geyer 2023', width/2.0-80, height-7);
+  text('ROUND', width-50, height-7);
 }
