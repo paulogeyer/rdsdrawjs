@@ -9,19 +9,20 @@ class Toolbox {
     fill(0, 28, 255);
     rect(0, 0, 70, HEIGHT);
     if(this.tools.length > 0) {
-      var h = 1;
+      // var h = 1;
       for(var i = 0; i < this.tools.length; i++) {
-	                          // restart width after two tools
-	image(this.tools[i].icon, 2+34*((i+1) % 2 == 0), h);
-	// update height after two tools are draw
-	if(((i+1) % 2) == 0) {
-	  h += 32;
+	image(this.tools[i].icon, this.tools[i].x, this.tools[i].y);
+	if(this.tools[i] == this.selectedTool) {
+	  stroke('red');
+	  strokeWeight(2);
+	  noFill();
+	  rect(this.tools[i].x, this.tools[i].y, 31, 31);
 	}
       }
     }
   }
 
-  toolbarItemClick() {
+  toolbaritemclick() {
     return false;
   }
 
@@ -34,9 +35,12 @@ class Toolbox {
       alert("make sure your tool has both a name and an icon");
     }
 
+    var toolsn = this.tools.length;
+    // set tool x/y coordinates
+    tool.x = 2+34*((toolsn+1) % 2 == 0);
+    tool.y = 2+32*floor(toolsn/2);
     this.tools.push(tool);
     if(this.selectedTool == null)
       this.selectTool(tool);
   }
-
 }
