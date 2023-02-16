@@ -12,6 +12,8 @@ function preload() {
   toolbox.addTool(new Rect3d());
   toolbox.addTool(new Ellipsis());
   toolbox.addTool(new Ellipsis3d());
+  toolbox.addTool(new Triang());
+  toolbox.addTool(new Triang3d());
 }
 
 function setup() {
@@ -32,6 +34,9 @@ function draw() {
 }
 
 function mousePressed() {
+}
+
+function mouseReleased() {
   for(var i = 0; i < toolbox.tools.length; i++) {
     var tool = toolbox.tools[i];
     if(mouseX > tool.x && mouseX < tool.x+31 &&
