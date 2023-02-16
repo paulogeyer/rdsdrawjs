@@ -23,9 +23,19 @@ function draw() {
   toolbox.draw();
 
   noStroke();
+  fill(0, 28, 255);
   rect(0, HEIGHT-20, WIDTH, 20);
   fill(255);
   textFont(fontIBM);
   text('RDSdrawJS V0.1 - (C) Paulo Geyer 2023', width/2.0-80, height-7);
   text('ROUND', width-50, height-7);
+}
+
+function mousePressed() {
+  for(var i = 0; i < toolbox.tools.length; i++) {
+    var tool = toolbox.tools[i];
+    if(mouseX > tool.x && mouseX < tool.x+31 &&
+       mouseY > tool.y && mouseY < tool.y+31)
+      toolbox.selectTool(toolbox.tools[i]);
+  }
 }

@@ -29,4 +29,10 @@ class Rect {
       startMouseY = -1;
     }
   }
+
+  click() {
+    if(mouseX > this.x && mouseX < this.x+31 &&
+       mouseY > this.y && mouseY < this.y+31)
+      console.log("foo");
+  }
 }
