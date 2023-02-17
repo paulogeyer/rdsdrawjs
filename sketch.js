@@ -3,17 +3,20 @@ var ui;
 var toolbox;
 var WIDTH = 640;
 var HEIGHT = 480;
+var STATUS_MSG;
 
 function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
 
   toolbox = new Toolbox(ui);
-  toolbox.addTool(new Rect());
-  toolbox.addTool(new Rect3d());
-  toolbox.addTool(new Ellipsis());
-  toolbox.addTool(new Ellipsis3d());
-  toolbox.addTool(new Triang());
-  toolbox.addTool(new Triang3d());
+  toolbox.addTool(new FlatPlane());
+  toolbox.addTool(new Pyramid());
+  toolbox.addTool(new Circle());
+  toolbox.addTool(new Elipsoid());
+  toolbox.addTool(new Poligon());
+  toolbox.addTool(new Poligon3d());
+  toolbox.addTool(new Plane());
+  toolbox.addTool(new Cylinder());
 }
 
 function setup() {
@@ -24,12 +27,17 @@ function draw() {
   background(0);
   toolbox.draw();
 
+  STATUS_MSG = 'RDSdrawJS V0.1 - (C) Paulo Geyer 2023';
+  for(var i = 0; i < toolbox.tools.length; i++) {
+    toolbox.tools[i].mouseOver();
+  }
+
   noStroke();
   fill(0, 28, 255);
   rect(0, HEIGHT-20, WIDTH, 20);
   fill(255);
   textFont(fontIBM);
-  text('RDSdrawJS V0.1 - (C) Paulo Geyer 2023', width/2.0-80, height-7);
+  text(STATUS_MSG, width/2.0-170, height-7);
   text('ROUND', width-50, height-7);
 }
 

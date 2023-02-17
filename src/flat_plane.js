@@ -1,8 +1,9 @@
-
-class Rect {
+class FlatPlane extends Tool {
   constructor() {
-    this.icon = loadImage('icons/rect.png');
-    this.name = 'rect tool';
+    super();
+    this.icon = loadImage('icons/flat_plane.png');
+    this.name = 'flat plane';
+    this.desc = 'painting tool: FLAT PLANE';
     var startMouseX = -1;
     var startMouseY = -1;
     var drawing = false;
