@@ -7,7 +7,7 @@ class Toolbox {
 
   draw() {
     fill(0, 28, 255);
-    rect(0, 0, 70, HEIGHT);
+    // rect(0, 0, 70, HEIGHT);
     if(this.tools.length > 0) {
       for(var i = 0; i < this.tools.length; i++) {
 	image(this.tools[i].icon, this.tools[i].x, this.tools[i].y);
@@ -36,8 +36,8 @@ class Toolbox {
 
     var toolsn = this.tools.length;
     // set tool x/y coordinates
-    tool.x = 2+34*((toolsn+1) % 2 == 0);
-    tool.y = 2+32*floor(toolsn/2);
+    tool.x = 32*((toolsn+1) % 2 == 0);
+    tool.y = 32*floor(toolsn/2);
     this.tools.push(tool);
     // select tool if none is selected
     if(this.selectedTool == null)
