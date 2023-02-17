@@ -27,6 +27,8 @@ function preload() {
 
 function setup() {
   ui = createCanvas(WIDTH, HEIGHT);
+  // disable right-click context menu
+  ui.elt.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
 function draw() {
