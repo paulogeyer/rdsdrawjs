@@ -1,4 +1,3 @@
-
 class Circle extends Tool {
   constructor() {
     super();

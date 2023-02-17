@@ -17,6 +17,12 @@ function preload() {
   toolbox.addTool(new Poligon3d());
   toolbox.addTool(new Plane());
   toolbox.addTool(new Cylinder());
+  toolbox.addTool(new Freehand());
+  toolbox.addTool(new Text());
+  toolbox.addTool(new Grabbing());
+  toolbox.addTool(new ClearScreen());
+  toolbox.addTool(new DiskOperation());
+  toolbox.addTool(new RDS());
 }
 
 function setup() {
