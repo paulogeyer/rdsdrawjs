@@ -38,19 +38,19 @@ class Palette {
       var ci = colorn-i-1;
       fill(this.colors[ci][1]);
       noStroke();
-      rect(this.x+6, this.y+22+13*i, 20, 8);
-      rect(this.x+38, this.y+22+13*i, 20, 8);
+      rect(this.x+6, this.y+22+13*i, 18, 8);
+      rect(this.x+40, this.y+22+13*i, 18, 8);
 
       if(ci == this.cur_bg) {
 	stroke(255,0,0);
 	noFill();
-	rect(this.x+6, this.y+22+13*i, 20, 8);
+	rect(this.x+6, this.y+22+13*i, 18, 8);
       }
 
       if(ci == this.cur_fg) {
 	stroke(255,0,0);
 	noFill();
-	rect(this.x+38, this.y+22+13*i, 20, 8);
+	rect(this.x+40, this.y+22+13*i, 18, 8);
       }
     }
   }
