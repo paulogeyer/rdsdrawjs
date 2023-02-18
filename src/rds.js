@@ -9,6 +9,7 @@ class RDS extends Tool {
     var drawing = false;
   }
 
-  draw() {
+  click() {
+    window.alert("generate stuff");
   }
 }

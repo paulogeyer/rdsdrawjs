@@ -9,6 +9,7 @@ class ClearScreen extends Tool {
     var drawing = false;
   }
 
-  draw() {
+  click() {
+    window.alert("clear stuff");
   }
 }

@@ -9,6 +9,7 @@ function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
 
   toolbox = new Toolbox(ui);
+  toolbox.palette = new Palette(0,230);
   toolbox.addTool(new FlatPlane());
   toolbox.addTool(new Pyramid());
   toolbox.addTool(new Circle());
@@ -40,6 +41,8 @@ function draw() {
     toolbox.tools[i].mouseOver();
   }
 
+  toolbox.palette.draw();
+
   noStroke();
   fill(0, 28, 255);
   rect(0, HEIGHT-20, WIDTH, 20);
@@ -56,7 +59,12 @@ function mouseReleased() {
   for(var i = 0; i < toolbox.tools.length; i++) {
     var tool = toolbox.tools[i];
     if(mouseX > tool.x && mouseX < tool.x+31 &&
-       mouseY > tool.y && mouseY < tool.y+31)
-      toolbox.selectTool(toolbox.tools[i]);
+       mouseY > tool.y && mouseY < tool.y+31) {
+      if(tool.click) {
+	tool.click();
+      } else {
+	toolbox.selectTool(toolbox.tools[i]);
+      }
+    }
   }
 }

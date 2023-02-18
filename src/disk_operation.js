@@ -9,6 +9,7 @@ class DiskOperation extends Tool {
     var drawing = false;
   }
 
-  draw() {
+  click() {
+    window.alert("disk stuff");
   }
 }
