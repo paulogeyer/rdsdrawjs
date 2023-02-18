@@ -9,7 +9,7 @@ function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
 
   toolbox = new Toolbox(ui);
-  toolbox.palette = new Palette(0,230);
+  toolbox.palette = new Palette(0,223);
   toolbox.addTool(new FlatPlane());
   toolbox.addTool(new Pyramid());
   toolbox.addTool(new Circle());

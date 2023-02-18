@@ -19,15 +19,39 @@ class Palette {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.cur_fg = 15;
+    this.cur_bg = 7;
   }
 
   draw() {
     var colorn = this.colors.length;
+
+    fill(0, 28, 255);
+    noStroke();
+    rect(this.x, this.y, 63, 236);
+    fill(255);
+    textFont(fontIBM);
+    text("BG", this.x+10, this.y+13);
+    text("FG", this.x+42, this.y+13);
+
     for(var i = 0; i < colorn; i++) {
-      fill(this.colors[colorn-i-1][1]);
+      var ci = colorn-i-1;
+      fill(this.colors[ci][1]);
       noStroke();
-      rect(this.x+8, this.y+14*i, 20, 10);
-      rect(this.x+38, this.y+14*i, 20, 10);
+      rect(this.x+6, this.y+22+13*i, 20, 8);
+      rect(this.x+38, this.y+22+13*i, 20, 8);
+
+      if(ci == this.cur_bg) {
+	stroke(255,0,0);
+	noFill();
+	rect(this.x+6, this.y+22+13*i, 20, 8);
+      }
+
+      if(ci == this.cur_fg) {
+	stroke(255,0,0);
+	noFill();
+	rect(this.x+38, this.y+22+13*i, 20, 8);
+      }
     }
   }
 }
