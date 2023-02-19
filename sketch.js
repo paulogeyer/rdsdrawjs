@@ -45,14 +45,11 @@ function draw() {
 
   noStroke();
   fill(255);
-  drawBorder(65, height-18, width-129, 17);
+  drawBorder(65, height-18, width-129, 17, true);
   textFont(fontIBM);
   text(STATUS_MSG, width/2.0-170, height-7);
-  drawBorder(width-62, height-18, 61, 17);
+  drawBorder(width-62, height-18, 61, 17, true);
   text('ROUND', width-50, height-7);
-}
-
-function mousePressed() {
 }
 
 function mouseReleased() {
@@ -69,15 +66,24 @@ function mouseReleased() {
   }
 }
 
-function drawBorder(x, y, w, h) {
+function drawBorder(x, y, w, h, bg=false, inv=false) {
   push();
+  if(inv) {
+    var l2 = color(0,40,170);
+    var l1 = color(0,125,255);
+  } else {
+    var l1 = color(0,40,170);
+    var l2 = color(0,125,255);
+  }
+
   fill(0, 28, 255);
-  rect(x, y, w, h);
-  stroke(0,40,170);
+  if(bg)
+    rect(x, y, w, h);
+  stroke(l1);
   strokeWeight(2);
   line(x, y, x+w, y);
   line(x, y, x, y+h);
-  stroke(0,125,255);
+  stroke(l2);
   line(x, y+h, x+w, y+h);
   line(x+w, y, x+w, y+h);
   pop();

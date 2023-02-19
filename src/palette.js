@@ -1,4 +1,9 @@
 class Palette {
+  button_xoffset = 5;
+  button_yoffset = 25;
+  button_width = 18;
+  button_height = 10;
+
   colors = [[7, color(0,255,255)],
 	    [6, color(0,203,255)],
 	    [5, color(0,125,255)],
@@ -29,29 +34,48 @@ class Palette {
     fill(0, 28, 255);
     noStroke();
     // rect(this.x, this.y, 63, 236);
+    rect(this.x, this.y, 63, 256);
     drawBorder(this.x, this.y, 63, 256);
     fill(255);
     textFont(fontIBM);
-    text("BG", this.x+10, this.y+13);
-    text("FG", this.x+42, this.y+13);
+    text("BG", this.x+10, this.y+15);
+    text("FG", this.x+42, this.y+15);
 
     for(var i = 0; i < colorn; i++) {
       var ci = colorn-i-1;
+      fill(255);
+      noStroke();
+      text(this.colors[ci][0], 28, this.y+33+14*i);
+
       fill(this.colors[ci][1]);
       noStroke();
-      rect(this.x+6, this.y+22+13*i, 18, 8);
-      rect(this.x+40, this.y+22+13*i, 18, 8);
+      rect(this.x+this.button_xoffset, this.y+this.button_yoffset+14*i,
+	   this.button_width, this.button_height);
+      rect(this.x+2*this.button_xoffset+29,
+	   this.y+this.button_yoffset+14*i,
+	   this.button_width, this.button_height);
 
       if(ci == this.cur_bg) {
 	stroke(255,0,0);
 	noFill();
-	rect(this.x+6, this.y+22+13*i, 18, 8);
+	rect(this.x+this.button_xoffset, this.y+this.button_yoffset+14*i,
+	     this.button_width, this.button_height);
+      } else {
+	drawBorder(this.x+this.button_xoffset,
+		   this.y+this.button_yoffset+14*i,
+		   this.button_width, this.button_height, false, true);
       }
 
       if(ci == this.cur_fg) {
 	stroke(255,0,0);
 	noFill();
-	rect(this.x+40, this.y+22+13*i, 18, 8);
+	rect(this.x+2*this.button_xoffset+29,
+	     this.y+this.button_yoffset+14*i,
+	     this.button_width, this.button_height);
+      } else {
+	drawBorder(this.x+2*this.button_xoffset+29,
+		   this.y+this.button_yoffset+14*i,
+		   this.button_width, this.button_height, false, true);
       }
     }
   }
