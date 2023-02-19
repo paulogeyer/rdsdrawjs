@@ -3,7 +3,7 @@ class Grabbing extends Tool {
     super();
     this.icon = loadImage('icons/grabbing.png');
     this.name = 'freehand';
-    this.desc = 'GRABBING: select with right button to grab or with left one to pase - try F2 toggle...';
+    this.desc = 'GRABBING: select with right button to grab or with left one to paste - try F2 toggle...';
     var startMouseX = -1;
     var startMouseY = -1;
     var drawing = false;
