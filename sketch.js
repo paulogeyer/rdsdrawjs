@@ -66,20 +66,20 @@ function mouseReleased() {
       var bx = 6;
       var by = 250+14*i;
 
+      // select bg color
       if(mouseX > bx &&
 	 mouseX < bx+18 &&
 	 mouseY > by &&
 	 mouseY < by+14) {
 	toolbox.palette.cur_bg = ci;
-	// window.alert(colors[colorsn-i-1][0]);
       }
 
+      // select fg color
       if(mouseX > bx+34 &&
 	 mouseX < bx+50 &&
 	 mouseY > by &&
 	 mouseY < by+14) {
 	toolbox.palette.cur_fg = ci;
-	// window.alert(colors[colorsn-i-1][0]);
       }
     }
   }
@@ -101,6 +101,7 @@ function mouseReleased() {
 
 function drawBorder(x, y, w, h, bg=false, inv=false) {
   push();
+  // invert colors
   if(inv) {
     var l2 = color(0,40,170);
     var l1 = color(0,125,255);
@@ -110,6 +111,7 @@ function drawBorder(x, y, w, h, bg=false, inv=false) {
   }
 
   fill(0, 28, 255);
+  // add blue background
   if(bg)
     rect(x, y, w, h);
   stroke(l1);
