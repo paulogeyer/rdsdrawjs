@@ -28,7 +28,8 @@ class Palette {
 
     fill(0, 28, 255);
     noStroke();
-    rect(this.x, this.y, 63, 236);
+    // rect(this.x, this.y, 63, 236);
+    drawBorder(this.x, this.y, 63, 256);
     fill(255);
     textFont(fontIBM);
     text("BG", this.x+10, this.y+13);

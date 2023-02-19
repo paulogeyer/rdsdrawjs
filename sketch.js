@@ -44,11 +44,11 @@ function draw() {
   toolbox.palette.draw();
 
   noStroke();
-  fill(0, 28, 255);
-  rect(0, HEIGHT-20, WIDTH, 20);
   fill(255);
+  drawBorder(65, height-18, width-129, 17);
   textFont(fontIBM);
   text(STATUS_MSG, width/2.0-170, height-7);
+  drawBorder(width-62, height-18, 61, 17);
   text('ROUND', width-50, height-7);
 }
 
@@ -67,4 +67,18 @@ function mouseReleased() {
       }
     }
   }
+}
+
+function drawBorder(x, y, w, h) {
+  push();
+  fill(0, 28, 255);
+  rect(x, y, w, h);
+  stroke(0,40,170);
+  strokeWeight(2);
+  line(x, y, x+w, y);
+  line(x, y, x, y+h);
+  stroke(0,125,255);
+  line(x, y+h, x+w, y+h);
+  line(x+w, y, x+w, y+h);
+  pop();
 }
