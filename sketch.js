@@ -43,24 +43,57 @@ function draw() {
 
   toolbox.palette.draw();
 
+  push();
   noStroke();
   fill(255);
   drawBorder(65, height-18, width-129, 17, true);
   textFont(fontIBM);
-  text(STATUS_MSG, width/2.0-170, height-7);
+  textSize(11);
+  text(STATUS_MSG, 75, height-7);
   drawBorder(width-62, height-18, 61, 17, true);
+  textSize(12);
   text('ROUND', width-50, height-7);
+  pop();
 }
 
 function mouseReleased() {
-  for(var i = 0; i < toolbox.tools.length; i++) {
-    var tool = toolbox.tools[i];
-    if(mouseX > tool.x && mouseX < tool.x+31 &&
-       mouseY > tool.y && mouseY < tool.y+31) {
-      if(tool.click) {
-	tool.click();
-      } else {
-	toolbox.selectTool(toolbox.tools[i]);
+  if(mouseX < 63 && mouseY > 223) {
+    var colors = toolbox.palette.colors;
+    var colorsn = colors.length;
+
+    for(var i = 0; i < colorsn; i++) {
+      var ci = colorsn-i-1;
+      var bx = 6;
+      var by = 250+14*i;
+
+      if(mouseX > bx &&
+	 mouseX < bx+18 &&
+	 mouseY > by &&
+	 mouseY < by+14) {
+	toolbox.palette.cur_bg = ci;
+	// window.alert(colors[colorsn-i-1][0]);
+      }
+
+      if(mouseX > bx+34 &&
+	 mouseX < bx+50 &&
+	 mouseY > by &&
+	 mouseY < by+14) {
+	toolbox.palette.cur_fg = ci;
+	// window.alert(colors[colorsn-i-1][0]);
+      }
+    }
+  }
+
+  if(mouseX < 63 && mouseY < 223) {
+    for(var i = 0; i < toolbox.tools.length; i++) {
+      var tool = toolbox.tools[i];
+      if(mouseX > tool.x && mouseX < tool.x+31 &&
+	 mouseY > tool.y && mouseY < tool.y+31) {
+	if(tool.click) {
+	  tool.click();
+	} else {
+	  toolbox.selectTool(toolbox.tools[i]);
+	}
       }
     }
   }
