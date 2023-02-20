@@ -4,6 +4,7 @@ var toolbox;
 var WIDTH = 640;
 var HEIGHT = 480;
 var STATUS_MSG;
+var canvas;
 
 function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
@@ -30,6 +31,7 @@ function setup() {
   ui = createCanvas(WIDTH, HEIGHT);
   // disable right-click context menu
   ui.elt.addEventListener("contextmenu", (e) => e.preventDefault());
+  canvas = new RDSCanvas(65, 1, 574, 462);
 }
 
 function draw() {
@@ -54,6 +56,16 @@ function draw() {
   textSize(12);
   text('ROUND', width-50, height-7);
   pop();
+
+  // draw canvas
+  canvas.draw();
+
+  // draw tool
+  if (toolbox.selectedTool.draw) {
+    toolbox.selectedTool.draw();
+  } else {
+    alert("it doesn't look like your tool has a draw method!");
+  }
 }
 
 function mouseReleased() {
