@@ -10,6 +10,7 @@ class ClearScreen extends Tool {
   }
 
   click() {
-    window.alert("clear stuff");
+    canvas.canvas
+      .background(toolbox.palette.colors[toolbox.palette.cur_bg][1]);
   }
 }

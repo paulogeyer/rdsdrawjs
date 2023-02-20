@@ -1,6 +1,4 @@
 class FlatPlane extends Tool {
-
-
   constructor() {
     super();
     this.icon = loadImage('icons/flat_plane.png');
