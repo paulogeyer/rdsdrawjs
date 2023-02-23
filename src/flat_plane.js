@@ -24,7 +24,6 @@ class FlatPlane extends Tool {
       if(mouseIsPressed) {
 	this.pt1x = mouseX-canvas.x;
 	this.pt1y = mouseY-canvas.y;
-	this.drawing = true;
 	this.step = 1;
 	canvas.canvas.loadPixels();
       }
@@ -42,45 +41,29 @@ class FlatPlane extends Tool {
 			   this.pt1y,
 			   this.pt2x,
 			   this.pt2y);
-
-	// canvas.canvas.rect(this.startMouseX-canvas.x,
-	// 		   this.startMouseY,
-	// 		   mouseX-this.startMouseX,
-	// 		   mouseY-this.startMouseY);
       } else {
 	this.step = 2;
       }
     } else if (this.step == 2) {
-      this.pt3x = mouseX-this.pt2x+this.pt1x-canvas.x;
-      this.pt3y = mouseY-this.pt2y+this.pt1y-canvas.y;
-      canvas.canvas.updatePixels();
-      canvas.canvas.beginShape();
-      canvas.canvas.noFill();
-      canvas.canvas.vertex(this.pt1x, this.pt1y);
-      canvas.canvas.vertex(this.pt2x, this.pt2y);
-      canvas.canvas.vertex(mouseX-canvas.x, mouseY-canvas.y);
-      canvas.canvas.vertex(this.pt3x, this.pt3y);
-      canvas.canvas.vertex(this.pt1x, this.pt1y);
-      canvas.canvas.endShape();
+      if(mouseIsPressed) {
+	this.step = 3;
+      } else {
+	this.pt3x = mouseX-this.pt2x+this.pt1x-canvas.x;
+	this.pt3y = mouseY-this.pt2y+this.pt1y-canvas.y;
+	canvas.canvas.updatePixels();
+	canvas.canvas.beginShape();
+	canvas.canvas.noFill();
+	canvas.canvas.vertex(this.pt1x, this.pt1y);
+	canvas.canvas.vertex(this.pt2x, this.pt2y);
+	canvas.canvas.vertex(mouseX-canvas.x, mouseY-canvas.y);
+	canvas.canvas.vertex(this.pt3x, this.pt3y);
+	canvas.canvas.vertex(this.pt1x, this.pt1y);
+	canvas.canvas.endShape();
+      }
+    } else if (this.step == 3) {
+      if(!mouseIsPressed) {
+	this.reset();
+      }
     }
-
-    // } else if (this.drawing && this.step == 1) {
-    //   var pt3x = this.pt2x-canvas.x-this.pt1x-canvas.x;
-    //   var pt3y = this.pt2y-this.pt1y-canvas.y;
-    //   canvas.canvas.updatePixels();
-    //   canvas.canvas.beginShape();
-    //   canvas.canvas.vertex(this.pt1x-canvas.x, this.pt1y-canvas.y);
-    //   canvas.canvas.vertex(this.pt2x-canvas.x, this.pt2y);
-    //   canvas.canvas.vertex(mouseX-canvas.x, mouseY-canvas.y);
-    //   canvas.canvas.vertex(pt3x, pt3y);
-    //   canvas.canvas.endShape();
-    // } else if(this.drawing) {
-    //   this.drawing = false;
-    //   this.step = 0;
-    //   this.pt1x = -1;
-    //   this.pt1y = -1;
-    //   this.pt2x = -1;
-    //   this.pt2y = -1;
-    // }
   }
 }
