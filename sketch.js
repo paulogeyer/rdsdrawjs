@@ -62,7 +62,9 @@ function draw() {
 
   // draw tool
   if (toolbox.selectedTool.draw) {
-    toolbox.selectedTool.draw();
+    // draw only when mouse is inside canvas
+    if(mouseX > canvas.x && mouseY < canvas.h)
+      toolbox.selectedTool.draw();
   } else {
     alert("it doesn't look like your tool has a draw method!");
   }

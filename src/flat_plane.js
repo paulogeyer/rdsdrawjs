@@ -43,6 +43,7 @@ class FlatPlane extends Tool {
 			   this.pt2y);
       } else {
 	this.step = 2;
+	canvas.canvas.loadPixels();
       }
     } else if (this.step == 2) {
       if(mouseIsPressed) {
