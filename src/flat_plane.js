@@ -14,8 +14,6 @@ class FlatPlane extends Tool {
     this.pt2y = -1;
     this.pt3x = -1;
     this.pt3y = -1;
-    this.pt4x = -1;
-    this.pt4y = -1;
     this.step = 0;
   }
 
