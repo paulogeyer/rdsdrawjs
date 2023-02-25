@@ -50,7 +50,7 @@ class FlatPlane extends Tool {
 		       [mouseX-canvas.x, mouseY-canvas.y],
 		       [this.pt3x, this.pt3y],
 		       [this.pt1x, this.pt1y]],
-		      true);
+		      false);
 	this.step = 3;
       } else {
 	this.pt3x = mouseX-this.pt2x+this.pt1x-canvas.x;
@@ -61,7 +61,7 @@ class FlatPlane extends Tool {
 		       [mouseX-canvas.x, mouseY-canvas.y],
 		       [this.pt3x, this.pt3y],
 		       [this.pt1x, this.pt1y]],
-		      true);
+		      false);
       }
     } else if (this.step == 3) {
       if(!mouseIsPressed) {
@@ -69,7 +69,8 @@ class FlatPlane extends Tool {
 		       [this.pt2x, this.pt2y],
 		       [mouseX-canvas.x, mouseY-canvas.y],
 		       [this.pt3x, this.pt3y],
-		       [this.pt1x, this.pt1y]]);
+		       [this.pt1x, this.pt1y]],
+		     true);
 	this.reset();
       }
     }
