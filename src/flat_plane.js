@@ -90,7 +90,7 @@ class FlatPlane extends Tool {
     canvas.canvas.beginShape();
     for(var i = 0; i < pts.length; i++)
       canvas.canvas.vertex(pts[i][0], pts[i][1]);
-    canvas.canvas.endShape();    
+    canvas.canvas.endShape();
 
     pop();
   }
