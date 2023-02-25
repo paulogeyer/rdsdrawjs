@@ -79,4 +79,25 @@ class Palette {
       }
     }
   }
+
+  range_ids() {
+    var range = Math.abs(this.cur_fg-this.cur_bg);
+    var r = [];
+    var start = this.cur_bg;
+    var end = this.cur_fg;
+
+    if(start >= end) {
+      var op = (a,b) => a-b;
+      var cmp = (a,b) => a>=b;
+    } else {
+      var op = (a,b) => a+b;
+      var cmp = (a,b) => a<=b;
+    }
+
+    for(var i = start; cmp(i,end); i=op(i,1)) {
+      r.push(i);
+    }
+
+    return r;
+  }
 }
