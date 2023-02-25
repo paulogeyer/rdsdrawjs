@@ -45,34 +45,53 @@ class FlatPlane extends Tool {
     } else if (this.step == 2) {
       if(mouseIsPressed) {
 	canvas.canvas.beginShape();
-	canvas.canvas
-	  .stroke(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
-	canvas.canvas
-	  .fill(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
-	canvas.canvas.vertex(this.pt1x, this.pt1y);
-	canvas.canvas.vertex(this.pt2x, this.pt2y);
-	canvas.canvas.vertex(mouseX-canvas.x, mouseY-canvas.y);
-	canvas.canvas.vertex(this.pt3x, this.pt3y);
-	canvas.canvas.vertex(this.pt1x, this.pt1y);
-	canvas.canvas.endShape();
+	this.drawRect([[this.pt1x, this.pt1y],
+		       [this.pt2x, this.pt2y],
+		       [mouseX-canvas.x, mouseY-canvas.y],
+		       [this.pt3x, this.pt3y],
+		       [this.pt1x, this.pt1y]],
+		      true);
 	this.step = 3;
       } else {
 	this.pt3x = mouseX-this.pt2x+this.pt1x-canvas.x;
 	this.pt3y = mouseY-this.pt2y+this.pt1y-canvas.y;
 	canvas.canvas.updatePixels();
-	canvas.canvas.beginShape();
-	canvas.canvas.noFill();
-	canvas.canvas.vertex(this.pt1x, this.pt1y);
-	canvas.canvas.vertex(this.pt2x, this.pt2y);
-	canvas.canvas.vertex(mouseX-canvas.x, mouseY-canvas.y);
-	canvas.canvas.vertex(this.pt3x, this.pt3y);
-	canvas.canvas.vertex(this.pt1x, this.pt1y);
-	canvas.canvas.endShape();
+	this.drawRect([[this.pt1x, this.pt1y],
+		       [this.pt2x, this.pt2y],
+		       [mouseX-canvas.x, mouseY-canvas.y],
+		       [this.pt3x, this.pt3y],
+		       [this.pt1x, this.pt1y]],
+		      true);
       }
     } else if (this.step == 3) {
       if(!mouseIsPressed) {
+	this.drawRect([[this.pt1x, this.pt1y],
+		       [this.pt2x, this.pt2y],
+		       [mouseX-canvas.x, mouseY-canvas.y],
+		       [this.pt3x, this.pt3y],
+		       [this.pt1x, this.pt1y]]);
 	this.reset();
       }
     }
+  }
+
+  drawRect(pts, fill=false) {
+    push();
+
+    if(fill) {
+      canvas.canvas
+	.stroke(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+      canvas.canvas
+	.fill(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+    } else {
+      canvas.canvas.noFill();
+    }
+
+    canvas.canvas.beginShape();
+    for(var i = 0; i < pts.length; i++)
+      canvas.canvas.vertex(pts[i][0], pts[i][1]);
+    canvas.canvas.endShape();    
+
+    pop();
   }
 }
