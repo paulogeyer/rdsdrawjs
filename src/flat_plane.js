@@ -65,6 +65,7 @@ class FlatPlane extends Tool {
       }
     } else if (this.step == 3) {
       if(!mouseIsPressed) {
+	canvas.canvas.updatePixels();
 	this.drawRect([[this.pt1x, this.pt1y],
 		       [this.pt2x, this.pt2y],
 		       [mouseX-canvas.x, mouseY-canvas.y],
