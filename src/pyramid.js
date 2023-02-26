@@ -17,9 +17,22 @@ class Pyramid extends FlatPlane {
   //   var minY = this.minY();
   //   var midY = (minY+maxY)/2.0;
   //   var lY = maxY-minY;
+  //   console.log(maxX);
 
   //   for(var i = 0; i < l; i++) {
-  //     drawRect(this.pt1x, this.pt1y);
+  //     var ratio = i/l;
+  //     var c = toolbox.palette.colors[ids[i]][1];
+  //     var coords = [[this.pt1x+(midX-this.pt1x)*ratio,
+  // 		      this.pt1y+(midY-this.pt1y)*ratio],
+  // 		     [this.pt2x+(midX-this.pt2x)*ratio,
+  // 		      this.pt2y+(midY-this.pt2y)*ratio],
+  // 		     [this.pt3x+(midX-this.pt3x)*ratio,
+  // 		      this.pt3y+(midY-this.pt3y)*ratio],
+  // 		     [this.pt2x+(midX-this.pt4x)*ratio,
+  // 		      this.pt4y+(midY-this.pt4y)*ratio]];
+  //     // console.log(coords);
+  //     this.drawRect(coords,
+  // 	       c);
   //   }
   // }
 

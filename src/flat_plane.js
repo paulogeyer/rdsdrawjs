@@ -79,10 +79,8 @@ class FlatPlane extends Tool {
     push();
 
     if(fill) {
-      canvas.canvas
-	.stroke(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
-      canvas.canvas
-	.fill(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+      canvas.canvas.stroke(fill);
+      canvas.canvas.fill(fill);
     } else {
       canvas.canvas.noFill();
     }
@@ -101,6 +99,6 @@ class FlatPlane extends Tool {
 		   [this.pt4x, this.pt4y],
 		   [this.pt3x, this.pt3y],
 		   [this.pt1x, this.pt1y]],
-		  true);
+		  toolbox.palette.cur_fg_color());
   }
 }

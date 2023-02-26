@@ -100,4 +100,12 @@ class Palette {
 
     return r;
   }
+
+  cur_fg_color() {
+    return this.colors[this.cur_fg][1];
+  }
+
+  cur_bg_color() {
+    return this.colors[this.cur_bg][1];
+  }
 }
