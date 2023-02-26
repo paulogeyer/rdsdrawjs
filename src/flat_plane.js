@@ -14,6 +14,8 @@ class FlatPlane extends Tool {
     this.pt2y = -1;
     this.pt3x = -1;
     this.pt3y = -1;
+    this.pt4x = -1;
+    this.pt4y = -1;
     this.step = 0;
   }
 
@@ -44,7 +46,6 @@ class FlatPlane extends Tool {
       }
     } else if (this.step == 2) {
       if(mouseIsPressed) {
-	canvas.canvas.beginShape();
 	this.drawRect([[this.pt1x, this.pt1y],
 		       [this.pt2x, this.pt2y],
 		       [mouseX-canvas.x, mouseY-canvas.y],
@@ -55,10 +56,12 @@ class FlatPlane extends Tool {
       } else {
 	this.pt3x = mouseX-this.pt2x+this.pt1x-canvas.x;
 	this.pt3y = mouseY-this.pt2y+this.pt1y-canvas.y;
+	this.pt4x = mouseX-canvas.x;
+	this.pt4y = mouseY-canvas.y;
 	canvas.canvas.updatePixels();
 	this.drawRect([[this.pt1x, this.pt1y],
 		       [this.pt2x, this.pt2y],
-		       [mouseX-canvas.x, mouseY-canvas.y],
+		       [this.pt4x, this.pt4y],
 		       [this.pt3x, this.pt3y],
 		       [this.pt1x, this.pt1y]],
 		      false);
@@ -66,12 +69,7 @@ class FlatPlane extends Tool {
     } else if (this.step == 3) {
       if(!mouseIsPressed) {
 	canvas.canvas.updatePixels();
-	this.drawRect([[this.pt1x, this.pt1y],
-		       [this.pt2x, this.pt2y],
-		       [mouseX-canvas.x, mouseY-canvas.y],
-		       [this.pt3x, this.pt3y],
-		       [this.pt1x, this.pt1y]],
-		     true);
+	this.drawFinal();
 	this.reset();
       }
     }
@@ -95,5 +93,14 @@ class FlatPlane extends Tool {
     canvas.canvas.endShape();
 
     pop();
+  }
+
+  drawFinal() {
+    this.drawRect([[this.pt1x, this.pt1y],
+		   [this.pt2x, this.pt2y],
+		   [this.pt4x, this.pt4y],
+		   [this.pt3x, this.pt3y],
+		   [this.pt1x, this.pt1y]],
+		  true);
   }
 }
