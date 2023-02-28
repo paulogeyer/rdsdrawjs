@@ -27,7 +27,9 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 ## Original application reference screenshots
 
 ![blank screen](https://github.com/paulogeyer/rdsdrawjs/raw/master/docs/rdsdraw30.png "blank screen")
+
 ![drawings on canvvas](https://github.com/paulogeyer/rdsdrawjs/raw/master/docs/rdsdraw31.png "drawings on ccanvas")
+
 ![generated random dot stereogram](https://github.com/paulogeyer/rdsdrawjs/raw/master/docs/rdsdraw32.png "generated random dot stereogram")
 
 ## License
