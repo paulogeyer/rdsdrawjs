@@ -11,7 +11,7 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 - [x] Canvas
 - [x] Flat Plane
 - [ ] Pyramid (wip)
-- [ ] Circle (wip)
+- [x] Circle
 - [ ] Elipsoid
 - [ ] Poligon
 - [ ] Poligon 3D
@@ -23,6 +23,8 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 - [x] Clear Screen
 - [ ] Disk Operation
 - [ ] RDS (random dot stereogram render engine)
+
+![current app screen](https://github.com/paulogeyer/rdsdrawjs/raw/master/docs/Screenshot_2023-02-28.png "current app screen")
 
 ## Original application reference screenshots
 

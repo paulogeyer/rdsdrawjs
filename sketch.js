@@ -51,10 +51,10 @@ function draw() {
   drawBorder(65, height-18, width-129, 17, true);
   textFont(fontIBM);
   textSize(11);
-  text(STATUS_MSG, 75, height-7);
+  text(STATUS_MSG, 75, height-6);
   drawBorder(width-62, height-18, 61, 17, true);
   textSize(12);
-  text('ROUND', width-50, height-7);
+  text('ROUND', width-50, height-6);
   pop();
 
   // draw canvas

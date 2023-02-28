@@ -19,6 +19,15 @@ class Circle extends Tool {
       } else {
 	// draw the line when the user release the mouse button
 	canvas.canvas.updatePixels();
+	canvas.canvas.stroke(255);
+	canvas.canvas.noFill();
+	canvas.canvas.ellipse(this.startMouseX-canvas.x,
+			      this.startMouseY,
+			      2*(mouseX-this.startMouseX),
+			      2*(mouseY-this.startMouseY));
+      }
+    } else if(this.drawing) {
+	canvas.canvas.updatePixels();
 	canvas.canvas.noStroke();
 	canvas.canvas.fill(
 	  toolbox.palette.colors[toolbox.palette.cur_fg][1]);
@@ -26,8 +35,7 @@ class Circle extends Tool {
 			      this.startMouseY,
 			      2*(mouseX-this.startMouseX),
 			      2*(mouseY-this.startMouseY));
-      }
-    } else if(this.drawing) {
+
       this.drawing = false;
       this.startMouseX = -1;
       this.startMouseY = -1;
