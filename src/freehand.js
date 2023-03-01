@@ -22,8 +22,13 @@ class Freehand extends Tool {
       //there to the current mouse location
       else {
 	push();
-	canvas.canvas
-	  .stroke(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+	if(mouseButton == RIGHT) {
+	  canvas.canvas
+	    .stroke(toolbox.palette.colors[toolbox.palette.cur_bg][1]);
+	} else {
+	  canvas.canvas
+	    .stroke(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+	}
 	canvas.canvas
 	  .strokeWeight(30);
 	canvas.canvas
