@@ -19,6 +19,7 @@ class Pyramid extends FlatPlane {
     var midY = (minY+maxY)/2.0;
     var lY = maxY-minY;
 
+    push();
     for(var i = 0; i < l; i++) {
       var ratio = i/(l+1);
       var c = toolbox.palette.colors[ids[i]][1];
@@ -37,6 +38,7 @@ class Pyramid extends FlatPlane {
       this.drawRect(coords,
 	       c);
     }
+    pop();
   }
 
   maxX() {

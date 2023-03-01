@@ -11,7 +11,7 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 - [x] Status bar
 - [x] Canvas
 - [x] Flat Plane
-- [x] Pyramid (wip)
+- [x] Pyramid
 - [x] Circle
 - [ ] Elipsoid
 - [ ] Poligon
