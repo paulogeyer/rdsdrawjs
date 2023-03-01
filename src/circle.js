@@ -27,6 +27,7 @@ class Circle extends Tool {
 	// draw the line when the user release the mouse button
 	canvas.canvas.updatePixels();
 	canvas.canvas.stroke(255);
+	canvas.canvas.strokeWeight(1);
 	canvas.canvas.noFill();
 	canvas.canvas.ellipse(this.pt1x,
 			      this.pt1y,

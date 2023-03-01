@@ -20,7 +20,8 @@ class Freehand extends Tool {
       }
       //if we already have values for previousX and Y we can draw a line from 
       //there to the current mouse location
-      else{
+      else {
+	push();
 	canvas.canvas
 	  .stroke(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
 	canvas.canvas
@@ -32,6 +33,7 @@ class Freehand extends Tool {
 		mouseY);
 	this.previousMouseX = mouseX;
 	this.previousMouseY = mouseY;
+	pop();
       }
     }
     //if the user has released the mouse we want to set the previousMouse values 
