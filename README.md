@@ -8,9 +8,10 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 
 - [x] Toolbar
 - [x] Palette
+- [x] Status bar
 - [x] Canvas
 - [x] Flat Plane
-- [ ] Pyramid (wip)
+- [x] Pyramid (wip)
 - [x] Circle
 - [ ] Elipsoid
 - [ ] Poligon

@@ -33,7 +33,6 @@ class FlatPlane extends Tool {
 	this.pt2y = mouseY-canvas.y;
 	// draw the line when the user release the mouse button
 	canvas.canvas.updatePixels();
-	// canvas.canvas.noStroke();
 	canvas.canvas.strokeWeight(2);
 	canvas.canvas.stroke(255);
 	canvas.canvas.line(this.pt1x,
@@ -69,6 +68,7 @@ class FlatPlane extends Tool {
     } else if (this.step == 3) {
       if(!mouseIsPressed) {
 	canvas.canvas.updatePixels();
+	canvas.canvas.noStroke();
 	this.drawFinal();
 	this.reset();
       }
