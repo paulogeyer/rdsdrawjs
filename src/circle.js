@@ -4,41 +4,58 @@ class Circle extends Tool {
     this.icon = loadImage('icons/circle.png');
     this.name = 'circle';
     this.desc = 'painting tool: CIRCLE';
-    this.startMouseX = -1;
-    this.startMouseY = -1;
+    this.reset();
+  }
+
+  reset() {
+    this.pt1x = -1;
+    this.pt1y = -1;
     this.drawing = false;
   }
 
   draw() {
     if(mouseIsPressed) {
-      if(this.startMouseX == -1){
-	this.startMouseX = mouseX;
-	this.startMouseY = mouseY;
+      if(this.pt1x == -1){
+	this.pt1x = mouseX-canvas.x;
+	this.pt1y = mouseY;
 	this.drawing = true;
 	canvas.canvas.loadPixels();
       } else {
+	this.pt2x = 2*(mouseX-canvas.x-this.pt1x);
+	this.pt2y = 2*(mouseY-this.pt1y);
+
 	// draw the line when the user release the mouse button
 	canvas.canvas.updatePixels();
 	canvas.canvas.stroke(255);
 	canvas.canvas.noFill();
-	canvas.canvas.ellipse(this.startMouseX-canvas.x,
-			      this.startMouseY,
-			      2*(mouseX-this.startMouseX),
-			      2*(mouseY-this.startMouseY));
+	canvas.canvas.ellipse(this.pt1x,
+			      this.pt1y,
+			      this.pt2x,
+			      this.pt2y);
       }
     } else if(this.drawing) {
-	canvas.canvas.updatePixels();
-	canvas.canvas.noStroke();
-	canvas.canvas.fill(
-	  toolbox.palette.colors[toolbox.palette.cur_fg][1]);
-	canvas.canvas.ellipse(this.startMouseX-canvas.x,
-			      this.startMouseY,
-			      2*(mouseX-this.startMouseX),
-			      2*(mouseY-this.startMouseY));
-
-      this.drawing = false;
-      this.startMouseX = -1;
-      this.startMouseY = -1;
+      canvas.canvas.updatePixels();
+      this.drawFinal();
+      this.reset();
     }
+  }
+
+  drawFinal() {
+    push();
+    canvas.canvas.noStroke();
+
+    if(mouseButton == RIGHT) {
+      canvas.canvas.fill(
+	toolbox.palette.colors[toolbox.palette.cur_bg][1]);
+    } else {
+      canvas.canvas.fill(
+	toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+    }
+
+    canvas.canvas.ellipse(this.pt1x,
+			  this.pt1y,
+			  (this.pt2x),
+			  (this.pt2y));
+    pop();
   }
 }

@@ -41,7 +41,7 @@ class FlatPlane extends Tool {
 			   this.pt2y);
       } else {
 	this.step = 2;
-	canvas.canvas.loadPixels();
+
       }
     } else if (this.step == 2) {
       if(mouseIsPressed) {
@@ -94,11 +94,16 @@ class FlatPlane extends Tool {
   }
 
   drawFinal() {
+    if(mouseButton == RIGHT) {
+      var c = toolbox.palette.cur_bg_color();
+    } else {
+      var c = toolbox.palette.cur_fg_color();
+    }
     this.drawRect([[this.pt1x, this.pt1y],
 		   [this.pt2x, this.pt2y],
 		   [this.pt4x, this.pt4y],
 		   [this.pt3x, this.pt3y],
 		   [this.pt1x, this.pt1y]],
-		  toolbox.palette.cur_fg_color());
+		  c);
   }
 }

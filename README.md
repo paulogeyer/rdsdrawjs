@@ -13,7 +13,7 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 - [x] Flat Plane
 - [x] Pyramid
 - [x] Circle
-- [ ] Elipsoid
+- [x] Elipsoid
 - [ ] Poligon
 - [ ] Poligon 3D
 - [ ] Plane
