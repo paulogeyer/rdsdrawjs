@@ -1,9 +1,10 @@
 class Circle extends Tool {
+  icon = loadImage('icons/circle.png');
+  name = 'circle';
+  desc = 'painting tool: CIRCLE';
+
   constructor() {
     super();
-    this.icon = loadImage('icons/circle.png');
-    this.name = 'circle';
-    this.desc = 'painting tool: CIRCLE';
     this.reset();
   }
 

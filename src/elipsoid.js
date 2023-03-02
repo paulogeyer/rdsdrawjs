@@ -1,9 +1,10 @@
 class Elipsoid extends Circle {
+  icon = loadImage('icons/elipsoid.png');
+  name = 'Elipsoid';
+  desc = 'painting tool: ELIPSOID';
+
   constructor() {
     super();
-    this.icon = loadImage('icons/elipsoid.png');
-    this.name = 'Elipsoid';
-    this.desc = 'painting tool: ELIPSOID';
     this.reset();
   }
 

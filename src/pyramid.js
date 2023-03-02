@@ -1,9 +1,10 @@
 class Pyramid extends FlatPlane {
+  icon = loadImage('icons/pyramid.png');
+  name = 'Pyramid';
+  desc = 'painting tool: PYRAMID';
+
   constructor() {
     super();
-    this.icon = loadImage('icons/pyramid.png');
-    this.name = 'Pyramid';
-    this.desc = 'painting tool: PYRAMID';
   }
 
   drawFinal() {

@@ -1,13 +1,13 @@
 class Poligon extends Tool {
+  icon = loadImage('icons/poligon.png');
+  name = 'Poligon';
+  desc = 'painting tool: POLIGON';
   pts = [];
   step = 0;
   lastPt = [];
 
   constructor() {
     super();
-    this.icon = loadImage('icons/poligon.png');
-    this.name = 'Poligon';
-    this.desc = 'painting tool: POLIGON';
   }
 
   reset() {

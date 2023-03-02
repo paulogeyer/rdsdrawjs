@@ -1,9 +1,10 @@
 class FlatPlane extends Tool {
+  icon = loadImage('icons/flat_plane.png');
+  name = 'flat plane';
+  desc = 'painting tool: FLAT PLANE';
+
   constructor() {
     super();
-    this.icon = loadImage('icons/flat_plane.png');
-    this.name = 'flat plane';
-    this.desc = 'painting tool: FLAT PLANE';
     this.reset();
   }
 
