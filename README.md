@@ -14,8 +14,8 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 - [x] Pyramid
 - [x] Circle
 - [x] Elipsoid
-- [ ] Poligon
-- [ ] Poligon 3D
+- [ ] Poligon (wip)
+- [ ] Poligon 3D (wip)
 - [ ] Plane
 - [ ] Cylinder
 - [ ] Freehand (wip)
