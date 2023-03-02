@@ -70,6 +70,13 @@ function draw() {
   }
 }
 
+function keyPressed() {
+  for(var i = 0; i < toolbox.tools.length; i++) {
+    if(toolbox.tools[i].keyPressed && (toolbox.tools[i].active || i == toolbox.selectedTool))
+      toolbox.tools[i].keyPressed();
+  }
+}
+
 function mouseReleased() {
   if(mouseX < 63 && mouseY > 223) {
     var colors = toolbox.palette.colors;

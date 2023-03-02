@@ -23,7 +23,7 @@ The original application can be found here, http://home.rotfl.org/prg/rdsdraw/in
 - [ ] Grabbing
 - [x] Clear Screen
 - [ ] Disk Operation
-- [ ] RDS (random dot stereogram render engine)
+- [ ] RDS (random dot stereogram render engine, wip)
 
 ![current app screen](https://github.com/paulogeyer/rdsdrawjs/raw/master/docs/Screenshot_2023-03-01.png "current app screen")
 
