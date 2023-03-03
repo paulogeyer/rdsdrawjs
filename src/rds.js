@@ -23,29 +23,62 @@ class RDS extends Tool {
       this.active = false;
   }
 
-  colorDepth(x,y) {
+  colorDist(c1,c2) {
+    var r = Math.sqrt((c1.levels[0]-c2.levels[0])**2+
+		      (c1.levels[1]-c2.levels[1])**2+
+		      (c1.levels[2]-c2.levels[2])**2);
+    return r;
+  }
+
+  colorDepth(x,y, im) {
     var c = color(canvas.canvas.get(x,y));
+    // var c = this.getColor(x, y, im);
     var d = 0;
 
     for(var i = 0; i < toolbox.palette.colors.length; i++) {
-      if(c.toString() == toolbox.palette.colors[i][1].toString()) {
+      // if(c.toString() == toolbox.palette.colors[i][1].toString()) {
+      if(this.colorDist(c, toolbox.palette.colors[i][1]) < 170) {
 	return i;
       }
     }
 
-    console.log("x: "+x);
-    console.log("y: "+y);
-    console.log("c: "+c.toString())
+    console.log(c);
 
-    return 0;
+    for(var i = 0; i < toolbox.palette.colors.length; i++) {
+      console.log(this.colorDist(c, toolbox.palette.colors[i][1]));
+    }
+
+    throw "couldn't find color depth";
+
+    return undefined;
   }
 
-  d(x,y) {
-    var e = 60.0;
+  d(x,y, img) {
+    var e = 600.0;
     var v = 800.0;
-    var z = 100.0+map(this.colorDepth(x,y), 0, 15, 0, 255);
+    var cd = this.colorDepth(x,y, img);
+    var z = 100.0+map(cd, 0, 15, 0, 255);
     // console.log("z: "+z);
     return e*(1.0/(1.0+v/z));
+  }
+
+  getColor(x, y, img) {
+    var i = 4*(x+y*img.w);
+    var c = color(img[i],
+		  img[i+1],
+		  img[i+2]);
+    return c;
+  }
+
+  setColor(x, y, img, c) {
+    // console.log(c);
+    // console.log(c.levels);
+    var i = 4*(x+y*img.w);
+    img.pixels[i] = c.levels[0];
+    img.pixels[i+1] = c.levels[1];
+    img.pixels[i+2] = c.levels[2];
+    img.pixels[i+3] = 255;
+    return img;
   }
 
   render() {
@@ -56,26 +89,38 @@ class RDS extends Tool {
     outImg.background('red');
     console.log("do stuff here");
 
+    this.carrier_img.loadPixels();
+    canvas.canvas.loadPixels();
     outImg.loadPixels();
 
     for(var x = 0; x < w; x++) {
       for(var y = 0; y < h; y++) {
-	var d = this.d(x,y);
-	// console.log("d: "+d);
+	var d = this.d(x, y, canvas.canvas);
+	/// console.log("d: "+d);
 	// console.log("x: "+x);
 	// console.log("y: "+y);
 	if(x < d) {
 	  // console.log("x < d");
 	  var p = this.carrier_img.get((x % this.carrier_img.width), (y % this.carrier_img.height));
+	  // var p = this.getColor((x % this.carrier_img.width),
+	  // 			(y % this.carrier_img.height),
+	  // 			this.carrier_img.pixels);
+	  //var p = color('yellow');
 	} else {
 	  // console.log("x >= d");
-	  console.log("d: "+d);
-	  console.log("x: "+x);
-	  console.log("y: "+y);
+	  // console.log("d: "+d);
+	  // console.log("x: "+x);
+	  // console.log("y: "+y);
 	  var p = outImg.get(x-d, y);
+	  if(p == undefined)
+	    p = color('purple');
+	  // var p = this.getColor(x-d-100, y, outImg.pixels);
+	  // var p = color('purple');
 	}
 	// console.log(p.toString());
-	outImg.set(x, y, color(p));
+	// outImg.set(x, y, color(p));
+	// this.setColor(x, y, outImg, p);
+	outImg.set(x, y, p);
       }
     }
 
