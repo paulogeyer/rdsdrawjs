@@ -33,12 +33,13 @@ class RDS extends Tool {
   colorDepth(x,y, im) {
     var c = color(canvas.canvas.get(x,y));
     // var c = this.getColor(x, y, im);
+    var l = toolbox.palette.colors.length;
     var d = 0;
 
-    for(var i = 0; i < toolbox.palette.colors.length; i++) {
+    for(var i = 0; i < l; i++) {
       // if(c.toString() == toolbox.palette.colors[i][1].toString()) {
       if(this.colorDist(c, toolbox.palette.colors[i][1]) < 170) {
-	return i;
+	return 16*i;
       }
     }
 
@@ -54,10 +55,10 @@ class RDS extends Tool {
   }
 
   d(x,y, img) {
-    var e = 600.0;
+    var e = 200;
     var v = 800.0;
     var cd = this.colorDepth(x,y, img);
-    var z = 100.0+map(cd, 0, 15, 0, 255);
+    var z = 100.0+cd; // map(cd, 0, 15, 0, 255);
     // console.log("z: "+z);
     return e*(1.0/(1.0+v/z));
   }
@@ -82,19 +83,21 @@ class RDS extends Tool {
   }
 
   render() {
-    // var w = 66+574;
+    var cw = this.carrier_img.width;
+    var ch = this.carrier_img.height;
     var w = canvas.canvas.width;
     var h = canvas.canvas.height;
-    var outImg = createGraphics(w, h);
+    var outImg = createGraphics(w+cw, h);
     outImg.background('red');
+    outImg.image(this.carrier_img, 0, 0);
     console.log("do stuff here");
 
     this.carrier_img.loadPixels();
     canvas.canvas.loadPixels();
     outImg.loadPixels();
 
-    for(var x = 0; x < w; x++) {
-      for(var y = 0; y < h; y++) {
+    for(var x = cw; x < outImg.width; x++) {
+      for(var y = 0; y < outImg.height; y++) {
 	var d = this.d(x, y, canvas.canvas);
 	/// console.log("d: "+d);
 	// console.log("x: "+x);
@@ -111,7 +114,7 @@ class RDS extends Tool {
 	  // console.log("d: "+d);
 	  // console.log("x: "+x);
 	  // console.log("y: "+y);
-	  var p = outImg.get(x-d, y);
+	  var p = outImg.get((x-d) % w, y);
 	  if(p == undefined)
 	    p = color('purple');
 	  // var p = this.getColor(x-d-100, y, outImg.pixels);
@@ -120,7 +123,13 @@ class RDS extends Tool {
 	// console.log(p.toString());
 	// outImg.set(x, y, color(p));
 	// this.setColor(x, y, outImg, p);
-	outImg.set(x, y, p);
+	if(p) {
+	  outImg.set(x, y, p);
+	} else {
+	  console.log("x: "+x);
+	  console.log("y: "+x);
+	  throw "undefined";
+	}
       }
     }
 
