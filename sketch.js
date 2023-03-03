@@ -5,6 +5,7 @@ var WIDTH = 640;
 var HEIGHT = 480;
 var STATUS_MSG;
 var canvas;
+var cImg = undefined;
 
 function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
@@ -35,8 +36,10 @@ function setup() {
 }
 
 function draw() {
+
   background(0);
   toolbox.draw();
+
 
   STATUS_MSG = 'RDSdrawJS V0.1 - (C) Paulo Geyer 2023';
   for(var i = 0; i < toolbox.tools.length; i++) {
@@ -67,6 +70,13 @@ function draw() {
       toolbox.selectedTool.draw();
   } else {
     alert("it doesn't look like your tool has a draw method!");
+  }
+
+  if(cImg) {
+    image(cImg, canvas.x, canvas.y);
+    console.log("here here");
+    noLoop();
+    return;
   }
 }
 
