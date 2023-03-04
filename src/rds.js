@@ -11,6 +11,7 @@ class RDS extends Tool {
     super();
 
     this.carrimg = createGraphics(canvas.w, canvas.h);
+    this.carrimg.pixelDensity(1);
     this.carrimg.loadPixels();
     for(var x = 0; x < canvas.w; x++) {
       for(var y = 0; y < canvas.h; y++) {
@@ -60,7 +61,8 @@ class RDS extends Tool {
       }
     }
 
-    return (15-color_id);
+    // return (15-color_id);
+    return color_id;
   }
 
   colorDepth(x,y, im) {
@@ -68,7 +70,7 @@ class RDS extends Tool {
     // var c = im.get(x,y);
     var color_id = this.similarColorDepth(c);
     // var color_depth = toolbox.palette.colors[color_id][0];
-    var d = 16*color_id;
+    var d = 32*color_id;
 
     return d;
   }
@@ -103,11 +105,16 @@ class RDS extends Tool {
     var ch = this.carrimg.height;
     var w = canvas.canvas.width;
     var h = canvas.canvas.height;
+
     var outImg = createGraphics(w, h);
+    outImg.pixelDensity(1);
+
+    var im_array = new Array(4*w*h);
     
     this.carrier_img.loadPixels();
     canvas.canvas.loadPixels();
-    outImg.loadPixels();
+
+    // outImg.image(this.carrimg, 0, 0)
 
     // fill the canvas with the carrier image
     // for(var i = 0; i < 3; i++) {
@@ -119,26 +126,31 @@ class RDS extends Tool {
       for(var y = 0; y < outImg.height; y++) {
 	var p;
 	var d = this.d(x, y, canvas.canvas);
+	var idx = 4*(x+y*w);
 	if(x < d) {
-	  // p = this.carrimg.get((x % cw), (y % ch));
-	  p = this.getPixel(x % cw, y % ch, this.carrimg);
+	  p = color(this.carrimg.pixels[idx],
+		    this.carrimg.pixels[idx+1],
+		    this.carrimg.pixels[idx+2]);
 	} else {
-	  // p = outImg.get(x-d, y);
-	  // p = color('purple');
-	  // console.log("d: "+d);
-	  p = this.getPixel(x-d, y, outImg);
+	  var xidx = 4*(x-d+y*w);
+	  p = color(im_array[xidx],
+		    im_array[xidx+1],
+		    im_array[xidx+2]);
 	}
 
 	// outImg.set(x, y, p);
-	this.setPixel(x, y, outImg, color(p));
-	// var idx = 4*(x+y*w);
-	// outImg.pixels[idx] = p.levels[0];
-	// outImg.pixels[idx+1] = p.levels[1];
-	// outImg.pixels[idx+2] = p.levels[2];
-	// outImg.pixels[idx+3] = 255;
+	// this.setPixel(x, y, outImg, color(p));
+	im_array[idx] = p.levels[0];
+	im_array[idx+1] = p.levels[1];
+	im_array[idx+2] = p.levels[2];
+	im_array[idx+3] = 255;
       }
     }
 
+    outImg.loadPixels();
+    for(var i = 0; i < im_array.length; i++) {
+      outImg.pixels[i] = im_array[i];
+    }
     outImg.updatePixels();
 
     console.log("done");
