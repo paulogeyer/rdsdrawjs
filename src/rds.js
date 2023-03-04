@@ -30,36 +30,37 @@ class RDS extends Tool {
     return r;
   }
 
-  colorDepth(x,y, im) {
-    var c = color(canvas.canvas.get(x,y));
-    // var c = this.getColor(x, y, im);
+  similarColorDepth(c) {
     var l = toolbox.palette.colors.length;
-    var d = 0;
+    var color_id = undefined;
+    var sim_id = Infinity;
 
     for(var i = 0; i < l; i++) {
-      // if(c.toString() == toolbox.palette.colors[i][1].toString()) {
-      if(this.colorDist(c, toolbox.palette.colors[i][1]) < 170) {
-	return 16*i;
+      var cc = toolbox.palette.colors[i];
+      var csim = this.colorDist(cc[1], c);
+      if(csim < sim_id) {
+	sim_id = csim;
+	color_id = i;
       }
     }
 
-    console.log(c);
+    return color_id;
+  }
 
-    for(var i = 0; i < toolbox.palette.colors.length; i++) {
-      console.log(this.colorDist(c, toolbox.palette.colors[i][1]));
-    }
+  colorDepth(x,y, im) {
+    var c = color(canvas.canvas.get(x,y));
+    var color_id = this.similarColorDepth(c);
+    var color_depth = toolbox.palette.colors[color_id][0];
+    var d = 16*color_depth;
 
-    throw "couldn't find color depth";
-
-    return undefined;
+    return d;
   }
 
   d(x,y, img) {
-    var e = 200;
+    var e = 200.0;
     var v = 800.0;
     var cd = this.colorDepth(x,y, img);
-    var z = 100.0+cd; // map(cd, 0, 15, 0, 255);
-    // console.log("z: "+z);
+    var z = 100.0+cd;
     return e*(1.0/(1.0+v/z));
   }
 
@@ -72,8 +73,6 @@ class RDS extends Tool {
   }
 
   setColor(x, y, img, c) {
-    // console.log(c);
-    // console.log(c.levels);
     var i = 4*(x+y*img.w);
     img.pixels[i] = c.levels[0];
     img.pixels[i+1] = c.levels[1];
@@ -87,16 +86,20 @@ class RDS extends Tool {
     var ch = this.carrier_img.height;
     var w = canvas.canvas.width;
     var h = canvas.canvas.height;
-    var outImg = createGraphics(w+cw, h);
-    outImg.background('red');
-    outImg.image(this.carrier_img, 0, 0);
+    var outImg = createGraphics(w, h);
+    outImg.background('gray');
+
+    for(var i = 0; i < 10; i++) {
+      outImg.image(this.carrier_img, cw*i, 0);
+    }
+
     console.log("do stuff here");
 
     this.carrier_img.loadPixels();
     canvas.canvas.loadPixels();
     outImg.loadPixels();
 
-    for(var x = cw; x < outImg.width; x++) {
+    for(var x = 0; x < outImg.width; x++) {
       for(var y = 0; y < outImg.height; y++) {
 	var d = this.d(x, y, canvas.canvas);
 	/// console.log("d: "+d);
@@ -114,9 +117,9 @@ class RDS extends Tool {
 	  // console.log("d: "+d);
 	  // console.log("x: "+x);
 	  // console.log("y: "+y);
-	  var p = outImg.get((x-d) % w, y);
-	  if(p == undefined)
-	    p = color('purple');
+	  var p = outImg.get(x-d, y);
+	  // if(p == undefined)
+	  //   p = color('purple');
 	  // var p = this.getColor(x-d-100, y, outImg.pixels);
 	  // var p = color('purple');
 	}

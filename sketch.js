@@ -73,7 +73,7 @@ function draw() {
   }
 
   if(cImg) {
-    image(cImg, 0, canvas.y);
+    image(cImg, canvas.x, canvas.y);
     console.log("here here");
     noLoop();
     return;
