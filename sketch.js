@@ -74,9 +74,6 @@ function draw() {
 
   if(cImg) {
     image(cImg, canvas.x, canvas.y);
-    console.log("here here");
-    noLoop();
-    return;
   }
 }
 
