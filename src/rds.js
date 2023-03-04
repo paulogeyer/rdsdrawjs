@@ -25,10 +25,7 @@ class RDS extends Tool {
   }
 
   click() {
-    // window.alert("generate stuff");
-    console.log("active: "+this.active);
     this.active = true;
-    console.log("active: "+this.active);
     this.render();
   }
 
@@ -61,8 +58,7 @@ class RDS extends Tool {
       }
     }
 
-    // return (15-color_id);
-    return color_id;
+    return 15-color_id;
   }
 
   colorDepth(x,y, im) {
@@ -114,18 +110,10 @@ class RDS extends Tool {
     this.carrier_img.loadPixels();
     canvas.canvas.loadPixels();
 
-    // outImg.image(this.carrimg, 0, 0)
-
-    // fill the canvas with the carrier image
-    // for(var i = 0; i < 3; i++) {
-    //   outImg.image(this.carrimg, cw*i, 0);
-    //   outImg.image(this.carrimg, cw*i, ch);
-    // }
-
     for(var x = 0; x < outImg.width; x++) {
       for(var y = 0; y < outImg.height; y++) {
 	var p;
-	var d = this.d(x, y, canvas.canvas);
+	var d = round(this.d(x, y, canvas.canvas));
 	var idx = 4*(x+y*w);
 	if(x < d) {
 	  p = color(this.carrimg.pixels[idx],
@@ -138,8 +126,6 @@ class RDS extends Tool {
 		    im_array[xidx+2]);
 	}
 
-	// outImg.set(x, y, p);
-	// this.setPixel(x, y, outImg, color(p));
 	im_array[idx] = p.levels[0];
 	im_array[idx+1] = p.levels[1];
 	im_array[idx+2] = p.levels[2];
@@ -155,6 +141,5 @@ class RDS extends Tool {
 
     console.log("done");
     cImg = outImg;
-    // cImg = this.carrimg;
   }
 }
