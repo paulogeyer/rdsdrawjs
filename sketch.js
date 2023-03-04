@@ -10,6 +10,7 @@ var cImg = undefined;
 function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
 
+  canvas = new RDSCanvas(65, 1, 574, 462);
   toolbox = new Toolbox(ui);
   toolbox.palette = new Palette(0,223);
   toolbox.addTool(new FlatPlane());
