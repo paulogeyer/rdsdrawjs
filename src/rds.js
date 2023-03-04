@@ -89,11 +89,10 @@ class RDS extends Tool {
     var outImg = createGraphics(w, h);
     outImg.background('gray');
 
+    // fill the canvas with the carrier image
     for(var i = 0; i < 10; i++) {
       outImg.image(this.carrier_img, cw*i, 0);
     }
-
-    console.log("do stuff here");
 
     this.carrier_img.loadPixels();
     canvas.canvas.loadPixels();
@@ -102,30 +101,12 @@ class RDS extends Tool {
     for(var x = 0; x < outImg.width; x++) {
       for(var y = 0; y < outImg.height; y++) {
 	var d = this.d(x, y, canvas.canvas);
-	/// console.log("d: "+d);
-	// console.log("x: "+x);
-	// console.log("y: "+y);
 	if(x < d) {
-	  // console.log("x < d");
 	  var p = this.carrier_img.get((x % this.carrier_img.width), (y % this.carrier_img.height));
-	  // var p = this.getColor((x % this.carrier_img.width),
-	  // 			(y % this.carrier_img.height),
-	  // 			this.carrier_img.pixels);
-	  //var p = color('yellow');
 	} else {
-	  // console.log("x >= d");
-	  // console.log("d: "+d);
-	  // console.log("x: "+x);
-	  // console.log("y: "+y);
 	  var p = outImg.get(x-d, y);
-	  // if(p == undefined)
-	  //   p = color('purple');
-	  // var p = this.getColor(x-d-100, y, outImg.pixels);
-	  // var p = color('purple');
 	}
-	// console.log(p.toString());
-	// outImg.set(x, y, color(p));
-	// this.setColor(x, y, outImg, p);
+
 	if(p) {
 	  outImg.set(x, y, p);
 	} else {
@@ -140,6 +121,5 @@ class RDS extends Tool {
 
     console.log("done");
     cImg = outImg;
-    // noLoop();
   }
 }
