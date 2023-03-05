@@ -1,7 +1,5 @@
 class RDS extends Tool {
   carrier_img = loadImage('carrier_img.png');
-  carrier_img2 = loadImage('carrimg.jpg');
-  carrimg;
   icon = loadImage('icons/rds.png');
   name = 'rds';
   desc = 'RDS GENERATION: make a 3D-Image';
@@ -9,19 +7,6 @@ class RDS extends Tool {
 
   constructor() {
     super();
-
-    this.carrimg = createGraphics(canvas.w, canvas.h);
-    this.carrimg.pixelDensity(1);
-    this.carrimg.loadPixels();
-    for(var x = 0; x < canvas.w; x++) {
-      for(var y = 0; y < canvas.h; y++) {
-	this.carrimg.set(x, y, color(128*((noise(400*x,400*y) % 2)+(noise(x/8,y/8) % 4)),
-				     128*((noise(x/10,y/10) % 2)+(noise(x/3,y/3) % 2)),
-				     128*((noise(70*x+10,70*y+10) % 9)+(noise(70*x,70*y) % 6))));
-	// this.carrimg.set(x, y, color('red'));
-      }
-    }
-    this.carrimg.updatePixels();
   }
 
   click() {
@@ -63,10 +48,9 @@ class RDS extends Tool {
 
   colorDepth(x,y, im) {
     var c = color(canvas.canvas.get(x,y));
-    // var c = im.get(x,y);
     var color_id = this.similarColorDepth(c);
-    // var color_depth = toolbox.palette.colors[color_id][0];
-    var d = 32*color_id;
+    var color_depth = toolbox.palette.colors[color_id][0];
+    var d = 16+16*color_id;
 
     return d;
   }
@@ -74,7 +58,7 @@ class RDS extends Tool {
   d(x,y, img) {
     var e = 250.0;
     var v = 800.0;
-    var cd = 100+this.colorDepth(x,y, img);
+    var cd = this.colorDepth(x,y, img);
     var z = cd;
     return e*(1.0/(1.0+v/z));
   }
@@ -97,8 +81,8 @@ class RDS extends Tool {
   }
 
   render() {
-    var cw = this.carrimg.width;
-    var ch = this.carrimg.height;
+    var cw = this.carrier_img.width;
+    var ch = this.carrier_img.height;
     var w = canvas.canvas.width;
     var h = canvas.canvas.height;
 
@@ -107,6 +91,7 @@ class RDS extends Tool {
 
     var im_array = new Array(4*w*h);
     
+    outImg.loadPixels();
     this.carrier_img.loadPixels();
     canvas.canvas.loadPixels();
 
@@ -116,27 +101,21 @@ class RDS extends Tool {
 	var d = round(this.d(x, y, canvas.canvas));
 	var idx = 4*(x+y*w);
 	if(x < d) {
-	  p = color(this.carrimg.pixels[idx],
-		    this.carrimg.pixels[idx+1],
-		    this.carrimg.pixels[idx+2]);
+	  p = color(this.carrier_img.get(x % cw, y % ch));
 	} else {
 	  var xidx = 4*(x-d+y*w);
-	  p = color(im_array[xidx],
-		    im_array[xidx+1],
-		    im_array[xidx+2]);
+	  p = color(outImg.pixels[xidx],
+		    outImg.pixels[xidx+1],
+		    outImg.pixels[xidx+2]);
 	}
 
-	im_array[idx] = p.levels[0];
-	im_array[idx+1] = p.levels[1];
-	im_array[idx+2] = p.levels[2];
-	im_array[idx+3] = 255;
+	outImg.pixels[idx] = p.levels[0];
+	outImg.pixels[idx+1] = p.levels[1];
+	outImg.pixels[idx+2] = p.levels[2];
+	outImg.pixels[idx+3] = 255;
       }
     }
 
-    outImg.loadPixels();
-    for(var i = 0; i < im_array.length; i++) {
-      outImg.pixels[i] = im_array[i];
-    }
     outImg.updatePixels();
 
     console.log("done");
