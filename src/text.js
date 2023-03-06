@@ -9,6 +9,10 @@ class Text extends Tool {
     var drawing = false;
   }
 
+  click() {
+    window.alert("not implemented");
+  }
+
   draw() {
   }
 }

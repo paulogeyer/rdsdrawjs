@@ -10,6 +10,6 @@ class DiskOperation extends Tool {
   }
 
   click() {
-    window.alert("disk stuff");
+    window.alert("not implemented");
   }
 }

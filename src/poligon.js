@@ -15,6 +15,10 @@ class Poligon extends Tool {
     this.pts = [];
   }
 
+  click() {
+    window.alert("not implemented");
+  }
+
   draw() {
     if(this.step == 0 && mouseIsPressed) {
       this.step = 1;

@@ -9,6 +9,10 @@ class Grabbing extends Tool {
     var drawing = false;
   }
 
+  click() {
+    window.alert("not implemented");
+  }
+
   draw() {
   }
 }
