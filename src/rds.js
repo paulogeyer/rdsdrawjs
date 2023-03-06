@@ -10,8 +10,12 @@ class RDS extends Tool {
   }
 
   click() {
-    this.active = true;
-    this.render();
+    if(this.isFirefox()) {
+      window.alert("Unfortunately, the stereogram render doesn't work on firefox yet. At the moment Chrome/Chromium are recommended.");
+    } else {
+      this.active = true;
+      this.render();
+    }
   }
 
   keyPressed() {
@@ -101,7 +105,7 @@ class RDS extends Tool {
 	var d = round(this.d(x, y, canvas.canvas));
 	var idx = 4*(x+y*w);
 	if(x < d) {
-	  p = color(this.carrier_img.get(x % cw, y % ch));
+	  p = color(this.getPixel((x % cw), (y % ch), this.carrier_img));
 	} else {
 	  var xidx = 4*(x-d+y*w);
 	  p = color(outImg.pixels[xidx],
