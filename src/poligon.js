@@ -15,9 +15,9 @@ class Poligon extends Tool {
     this.pts = [];
   }
 
-  click() {
-    window.alert("not implemented");
-  }
+  // click() {
+  //   window.alert("not implemented");
+  // }
 
   draw() {
     if(this.step == 0 && mouseIsPressed) {
@@ -38,7 +38,7 @@ class Poligon extends Tool {
       } else {
 	var pts = this.pts.slice();
 	pts.push([mouseX-canvas.x, mouseY-canvas.y]);
-	console.log(pts);
+	// console.log(pts);
 	// pts.push([mouseX-canvas.x, mouseY-canvas.y]);
 	this.drawPoints(pts);
       }
@@ -58,5 +58,15 @@ class Poligon extends Tool {
     }
     canvas.canvas.endShape();
     pop();
+  }
+
+  keyPressed() {
+    // ESC key pressed
+    if(keyCode==27) {
+    }      
+
+    // enter key pressed
+    if(keyCode==13) {
+    }
   }
 }

@@ -79,10 +79,9 @@ function draw() {
 }
 
 function keyPressed() {
-  for(var i = 0; i < toolbox.tools.length; i++) {
-    if(toolbox.tools[i].keyPressed && (toolbox.tools[i].active || i == toolbox.selectedTool))
-      toolbox.tools[i].keyPressed();
-  }
+  // check if current tool has a keyPressed method, call it if exists
+  if(toolbox.selectedTool.keyPressed)
+    toolbox.selectedTool.keyPressed();
 }
 
 function mouseReleased() {
