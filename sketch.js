@@ -41,7 +41,6 @@ function draw() {
   background(0);
   toolbox.draw();
 
-
   STATUS_MSG = 'RDSdrawJS V0.1 - (C) Paulo Geyer 2023';
   for(var i = 0; i < toolbox.tools.length; i++) {
     toolbox.tools[i].mouseOver();
@@ -69,7 +68,7 @@ function draw() {
     // draw only when mouse is inside canvas
     if(mouseX > canvas.x && mouseY < canvas.h)
       toolbox.selectedTool.draw();
-  } else {
+  } else if(toolbox.selectedTool.name != "rds") {
     alert("it doesn't look like your tool has a draw method!");
   }
 

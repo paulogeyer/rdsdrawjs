@@ -13,6 +13,7 @@ class RDS extends Tool {
     if(this.isFirefox()) {
       window.alert("Unfortunately, the stereogram render doesn't work on firefox yet. At the moment Chrome/Chromium are recommended.");
     } else {
+      toolbox.selectedTool = this;
       this.active = true;
       this.render();
     }

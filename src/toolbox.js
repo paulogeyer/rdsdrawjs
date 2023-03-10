@@ -11,7 +11,7 @@ class Toolbox {
     if(this.tools.length > 0) {
       for(var i = 0; i < this.tools.length; i++) {
 	image(this.tools[i].icon, this.tools[i].x, this.tools[i].y);
-	if(this.tools[i] == this.selectedTool) {
+	if(this.tools[i] == this.selectedTool && this.selectedTool.name != "rds") {
 	  stroke('red');
 	  strokeWeight(2);
 	  noFill();
