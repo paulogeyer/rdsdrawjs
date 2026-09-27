@@ -4,7 +4,8 @@ class Poligon extends Tool {
   desc = 'painting tool: POLIGON';
   pts = [];
   step = 0;
-  lastPt = [];
+  pressed = false;
+  useBg = false;
 
   constructor() {
     super();
@@ -13,60 +14,75 @@ class Poligon extends Tool {
   reset() {
     this.step = 0;
     this.pts = [];
+    this.pressed = false;
+    this.useBg = false;
   }
 
-  // click() {
-  //   window.alert("not implemented");
-  // }
+  cancel() {
+    if(this.step > 0)
+      canvas.canvas.updatePixels();
+    this.reset();
+  }
 
   draw() {
-    if(this.step == 0 && mouseIsPressed) {
-      this.step = 1;
-      // this.pts.push([mouseX-canvas.x, mouseY-canvas.y]);
-      this.lastPt = [mouseX-canvas.x, mouseY-canvas.y];
-      canvas.canvas.loadPixels();
+    if(this.step == 0) {
+      if(mouseIsPressed && mouseInCanvas()) {
+        this.step = 1;
+        this.pts = [[mouseX-canvas.x, mouseY-canvas.y]];
+        this.useBg = mouseButton == RIGHT;
+        this.pressed = true;
+        canvas.canvas.loadPixels();
+      }
+      return;
     }
 
-    if(this.step == 1) {
-      canvas.canvas.updatePixels();
-      if(mouseIsPressed) {
-	var npt = [mouseX-canvas.x, mouseY-canvas.y];
-	if(npt[0] != this.lastPt[0] && npt[1] != this.lastPt[1])
-	  this.pts.push(npt);
-	this.lastPt = npt.slice();
-	this.drawPoints(this.pts);
-      } else {
-	var pts = this.pts.slice();
-	pts.push([mouseX-canvas.x, mouseY-canvas.y]);
-	// console.log(pts);
-	// pts.push([mouseX-canvas.x, mouseY-canvas.y]);
-	this.drawPoints(pts);
+    canvas.canvas.updatePixels();
+    var preview = this.pts.slice();
+    preview.push([mouseX-canvas.x, mouseY-canvas.y]);
+    this.strokeShape(preview);
+
+    if(mouseIsPressed && mouseInCanvas()) {
+      if(!this.pressed) {
+        var npt = [mouseX-canvas.x, mouseY-canvas.y];
+        var last = this.pts[this.pts.length-1];
+        if(last[0] != npt[0] || last[1] != npt[1])
+          this.pts.push(npt);
+        this.pressed = true;
       }
+    } else {
+      this.pressed = false;
     }
   }
 
-  drawPoints(pts) {
-    var n = this.pts.length;
-
-    push();
+  strokeShape(pts) {
     canvas.canvas.stroke(255);
     canvas.canvas.strokeWeight(1);
     canvas.canvas.noFill();
     canvas.canvas.beginShape();
-    for(var i = 0; i < n; i++) {
+    for(var i = 0; i < pts.length; i++)
       canvas.canvas.vertex(pts[i][0], pts[i][1]);
-    }
     canvas.canvas.endShape();
-    pop();
+  }
+
+  fillShape() {
+    var c = this.useBg ? toolbox.palette.cur_bg_color() : toolbox.palette.cur_fg_color();
+    canvas.canvas.noStroke();
+    canvas.canvas.fill(c);
+    canvas.canvas.beginShape();
+    for(var i = 0; i < this.pts.length; i++)
+      canvas.canvas.vertex(this.pts[i][0], this.pts[i][1]);
+    canvas.canvas.endShape(CLOSE);
   }
 
   keyPressed() {
-    // ESC key pressed
-    if(keyCode==27) {
-    }      
-
-    // enter key pressed
-    if(keyCode==13) {
+    if(this.step != 1)
+      return;
+    if(keyCode == 27)
+      this.cancel();
+    if(keyCode == 13 && this.pts.length >= 3) {
+      canvas.canvas.updatePixels();
+      this.fillShape();
+      this.reset();
     }
   }
 }

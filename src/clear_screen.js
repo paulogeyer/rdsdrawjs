@@ -10,7 +10,9 @@ class ClearScreen extends Tool {
   }
 
   click() {
-    canvas.canvas
-      .background(toolbox.palette.colors[toolbox.palette.cur_bg][1]);
+    if(toolbox.selectedTool && toolbox.selectedTool.reset)
+      toolbox.selectedTool.reset();
+    cImg = undefined;
+    canvas.canvas.background(toolbox.palette.colors[toolbox.palette.cur_bg][1]);
   }
 }

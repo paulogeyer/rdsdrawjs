@@ -10,120 +10,180 @@ class RDS extends Tool {
   }
 
   click() {
-    if(this.isFirefox()) {
-      window.alert("Unfortunately, the stereogram render doesn't work on firefox yet. At the moment Chrome/Chromium are recommended.");
-    } else {
-      toolbox.selectedTool = this;
-      this.active = true;
-      this.render();
-    }
+    toolbox.selectTool(this);
+    this.active = true;
+    this.render();
   }
 
   keyPressed() {
-    // deactivate RDS
     if(keyCode == 27) {
       this.active = false;
       cImg = undefined;
     }
   }
 
-  colorDist(c1,c2) {
-    var r = Math.sqrt((c1.levels[0]-c2.levels[0])**2+
-		      (c1.levels[1]-c2.levels[1])**2+
-		      (c1.levels[2]-c2.levels[2])**2);
-    return r;
-  }
+  depthMap(pixels, w, h) {
+    var colors = toolbox.palette.colors;
+    var n = colors.length;
+    var pr = new Uint8Array(n);
+    var pg = new Uint8Array(n);
+    var pb = new Uint8Array(n);
+    var pd = new Uint8Array(n);
+    var exact = new Map();
 
-  similarColorDepth(c) {
-    var l = toolbox.palette.colors.length;
-    var color_id = undefined;
-    var sim_id = Infinity;
-
-    for(var i = 0; i < l; i++) {
-      var cc = toolbox.palette.colors[i];
-      var csim = this.colorDist(cc[1], c);
-      if(csim < sim_id) {
-	sim_id = csim;
-	color_id = i;
-      }
+    for(var i = 0; i < n; i++) {
+      var lv = colors[i][1].levels;
+      pr[i] = Math.round(lv[0]);
+      pg[i] = Math.round(lv[1]);
+      pb[i] = Math.round(lv[2]);
+      pd[i] = colors[i][0];
+      exact.set((pr[i]<<16)|(pg[i]<<8)|pb[i], pd[i]);
     }
 
-    return 15-color_id;
+    var depth = new Uint8Array(w*h);
+    for(var p = 0, i = 0; p < w*h; p++, i += 4) {
+      var key = (pixels[i]<<16)|(pixels[i+1]<<8)|pixels[i+2];
+      var d = exact.get(key);
+      if(d == undefined) {
+        var best = Infinity;
+        var r = pixels[i], g = pixels[i+1], b = pixels[i+2];
+        d = 0;
+        for(var c = 0; c < n; c++) {
+          var dr = r-pr[c], dg = g-pg[c], db = b-pb[c];
+          var dist = dr*dr+dg*dg+db*db;
+          if(dist < best) {
+            best = dist;
+            d = pd[c];
+          }
+        }
+      }
+      depth[p] = d;
+    }
+    return depth;
   }
 
-  colorDepth(x,y, im) {
-    var c = color(canvas.canvas.get(x,y));
-    var color_id = this.similarColorDepth(c);
-    var color_depth = toolbox.palette.colors[color_id][0];
-    var d = 16+16*color_id;
+  mu = 1/3;
+  eye = 132;
 
-    return d;
+  separation(z) {
+    var sep = Math.round((1-this.mu*z)*this.eye/(2-this.mu*z));
+    if(sep < 1)
+      sep = 1;
+    return sep;
   }
 
-  d(x,y, img) {
-    var e = 250.0;
-    var v = 800.0;
-    var cd = this.colorDepth(x,y, img);
-    var z = cd;
-    return e*(1.0/(1.0+v/z));
-  }
-
-  getPixel(x,y,im) {
-    var i = 4*(x+y*im.width);
-    var p = color(im.pixels[i],
-		  im.pixels[i+1],
-		  im.pixels[i+2]);
-
-    return p;
-  }
-
-  setPixel(x, y, im, p) {
-    var i = 4*(x+y*im.width);
-    im.pixels[i] = p.levels[0];
-    im.pixels[i+1] = p.levels[1];
-    im.pixels[i+2] = p.levels[2];
-    im.pixels[i+3] = 255;
+  smoothDepth(depth, w, h) {
+    var n = w*h;
+    var a = new Float64Array(n);
+    var b = new Float64Array(n);
+    for(var i = 0; i < n; i++)
+      a[i] = depth[i]/8;
+    for(var pass = 0; pass < 2; pass++) {
+      for(var y = 0; y < h; y++) {
+        var row = y*w;
+        for(var x = 0; x < w; x++) {
+          var s = a[row+x]*2;
+          var c = 2;
+          if(x > 0) { s += a[row+x-1]; c++; }
+          if(x+1 < w) { s += a[row+x+1]; c++; }
+          if(y > 0) { s += a[row-w+x]; c++; }
+          if(y+1 < h) { s += a[row+w+x]; c++; }
+          b[row+x] = s/c;
+        }
+      }
+      var tmp = a;
+      a = b;
+      b = tmp;
+    }
+    return a;
   }
 
   render() {
-    var cw = this.carrier_img.width;
-    var ch = this.carrier_img.height;
+    var carrier = this.carrier_img;
+    var cw = carrier.width;
+    var ch = carrier.height;
     var w = canvas.canvas.width;
     var h = canvas.canvas.height;
+    if(cw == 0 || ch == 0)
+      return;
+
+    carrier.loadPixels();
+    canvas.canvas.loadPixels();
+    this.eye = cw*2;
+    var zmap = this.smoothDepth(this.depthMap(canvas.canvas.pixels, w, h), w, h);
+    var mu = this.mu;
+    var E = this.eye;
+    var far = this.separation(0);
+    var cp = carrier.pixels;
 
     var outImg = createGraphics(w, h);
     outImg.pixelDensity(1);
-
-    var im_array = new Array(4*w*h);
-    
     outImg.loadPixels();
-    this.carrier_img.loadPixels();
-    canvas.canvas.loadPixels();
+    var op = outImg.pixels;
+    var same = new Int32Array(w);
 
-    for(var x = 0; x < outImg.width; x++) {
-      for(var y = 0; y < outImg.height; y++) {
-	var p;
-	var d = round(this.d(x, y, canvas.canvas));
-	var idx = 4*(x+y*w);
-	if(x < d) {
-	  p = color(this.getPixel((x % cw), (y % ch), this.carrier_img));
-	} else {
-	  var xidx = 4*(x-d+y*w);
-	  p = color(outImg.pixels[xidx],
-		    outImg.pixels[xidx+1],
-		    outImg.pixels[xidx+2]);
-	}
+    for(var y = 0; y < h; y++) {
+      var row = y*w;
+      for(var x = 0; x < w; x++)
+        same[x] = x;
 
-	outImg.pixels[idx] = p.levels[0];
-	outImg.pixels[idx+1] = p.levels[1];
-	outImg.pixels[idx+2] = p.levels[2];
-	outImg.pixels[idx+3] = 255;
+      for(var x = 0; x < w; x++) {
+        var z = zmap[row+x];
+        var s = this.separation(z);
+        var left = x-(s>>1);
+        var right = left+s;
+        if(left < 0 || right >= w)
+          continue;
+
+        var t = 1;
+        var visible = true;
+        var zt = z;
+        while(visible && zt < 1) {
+          zt = z+2*(2-mu*z)*t/(mu*E);
+          var zl = x-t >= 0 ? zmap[row+x-t] : 0;
+          var zr = x+t < w ? zmap[row+x+t] : 0;
+          if(zl >= zt || zr >= zt)
+            visible = false;
+          t++;
+        }
+        if(!visible)
+          continue;
+
+        var l = same[left];
+        var guard = 0;
+        while(l != left && l != right && guard++ < w) {
+          if(l < right) {
+            left = l;
+            l = same[left];
+          } else {
+            same[left] = right;
+            left = right;
+            l = same[left];
+            right = l;
+          }
+        }
+        same[left] = right;
+      }
+
+      for(var x = w-1; x >= 0; x--) {
+        var idx = 4*(row+x);
+        var sidx;
+        var src;
+        if(same[x] == x) {
+          sidx = 4*((x%far)%cw+(y%ch)*cw);
+          src = cp;
+        } else {
+          sidx = 4*(row+same[x]);
+          src = op;
+        }
+        op[idx] = src[sidx];
+        op[idx+1] = src[sidx+1];
+        op[idx+2] = src[sidx+2];
+        op[idx+3] = 255;
       }
     }
 
     outImg.updatePixels();
-
-    console.log("done");
     cImg = outImg;
   }
 }

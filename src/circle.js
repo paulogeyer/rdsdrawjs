@@ -11,53 +11,49 @@ class Circle extends Tool {
   reset() {
     this.pt1x = -1;
     this.pt1y = -1;
+    this.pt2x = undefined;
+    this.pt2y = undefined;
     this.drawing = false;
   }
 
-  draw() {
-    if(mouseIsPressed) {
-      if(this.pt1x == -1){
-	this.pt1x = mouseX-canvas.x;
-	this.pt1y = mouseY;
-	this.drawing = true;
-	canvas.canvas.loadPixels();
-      } else {
-	this.pt2x = 2*(mouseX-canvas.x-this.pt1x);
-	this.pt2y = 2*(mouseY-this.pt1y);
+  cancel() {
+    if(this.drawing)
+      canvas.canvas.updatePixels();
+    this.reset();
+  }
 
-	// draw the line when the user release the mouse button
-	canvas.canvas.updatePixels();
-	canvas.canvas.stroke(255);
-	canvas.canvas.strokeWeight(1);
-	canvas.canvas.noFill();
-	canvas.canvas.ellipse(this.pt1x,
-			      this.pt1y,
-			      this.pt2x,
-			      this.pt2y);
+  draw() {
+    if(mouseIsPressed && (this.drawing || mouseInCanvas())) {
+      if(this.pt1x == -1) {
+        this.pt1x = mouseX-canvas.x;
+        this.pt1y = mouseY-canvas.y;
+        this.drawing = true;
+        canvas.canvas.loadPixels();
+      } else {
+        this.pt2x = 2*(mouseX-canvas.x-this.pt1x);
+        this.pt2y = 2*(mouseY-canvas.y-this.pt1y);
+        canvas.canvas.updatePixels();
+        canvas.canvas.stroke(255);
+        canvas.canvas.strokeWeight(1);
+        canvas.canvas.noFill();
+        canvas.canvas.ellipse(this.pt1x, this.pt1y,
+                              Math.abs(this.pt2x), Math.abs(this.pt2y));
       }
     } else if(this.drawing) {
       canvas.canvas.updatePixels();
-      this.drawFinal();
+      if(this.pt2x != undefined)
+        this.drawFinal();
       this.reset();
     }
   }
 
   drawFinal() {
-    push();
     canvas.canvas.noStroke();
-
-    if(mouseButton == RIGHT) {
-      canvas.canvas.fill(
-	toolbox.palette.colors[toolbox.palette.cur_bg][1]);
-    } else {
-      canvas.canvas.fill(
-	toolbox.palette.colors[toolbox.palette.cur_fg][1]);
-    }
-
-    canvas.canvas.ellipse(this.pt1x,
-			  this.pt1y,
-			  (this.pt2x),
-			  (this.pt2y));
-    pop();
+    if(mouseButton == RIGHT)
+      canvas.canvas.fill(toolbox.palette.colors[toolbox.palette.cur_bg][1]);
+    else
+      canvas.canvas.fill(toolbox.palette.colors[toolbox.palette.cur_fg][1]);
+    canvas.canvas.ellipse(this.pt1x, this.pt1y,
+                          Math.abs(this.pt2x), Math.abs(this.pt2y));
   }
 }

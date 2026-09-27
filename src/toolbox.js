@@ -26,6 +26,14 @@ class Toolbox {
   }
 
   selectTool(tool) {
+    if(this.selectedTool && this.selectedTool != tool) {
+      if(this.selectedTool.cancel)
+        this.selectedTool.cancel();
+      else if(this.selectedTool.reset)
+        this.selectedTool.reset();
+    }
+    if(tool.name != 'rds')
+      cImg = undefined;
     this.selectedTool = tool;
   }
 

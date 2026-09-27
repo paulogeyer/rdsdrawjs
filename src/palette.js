@@ -108,4 +108,21 @@ class Palette {
   cur_bg_color() {
     return this.colors[this.cur_bg][1];
   }
+
+  swatchAt(mx, my) {
+    var n = this.colors.length;
+    for(var i = 0; i < n; i++) {
+      var ci = n-i-1;
+      var by = this.y+this.button_yoffset+14*i;
+      var bgx = this.x+this.button_xoffset;
+      var fgx = this.x+2*this.button_xoffset+29;
+      if(my < by || my >= by+this.button_height)
+        continue;
+      if(mx >= bgx && mx < bgx+this.button_width)
+        return {which: 'bg', index: ci};
+      if(mx >= fgx && mx < fgx+this.button_width)
+        return {which: 'fg', index: ci};
+    }
+    return null;
+  }
 }

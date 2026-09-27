@@ -10,7 +10,6 @@ var cImg = undefined;
 function preload() {
   fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
 
-  canvas = new RDSCanvas(65, 1, 574, 462);
   toolbox = new Toolbox(ui);
   toolbox.palette = new Palette(0,223);
   toolbox.addTool(new FlatPlane());
@@ -30,7 +29,9 @@ function preload() {
 }
 
 function setup() {
+  pixelDensity(1);
   ui = createCanvas(WIDTH, HEIGHT);
+  noSmooth();
   // disable right-click context menu
   ui.elt.addEventListener("contextmenu", (e) => e.preventDefault());
   canvas = new RDSCanvas(65, 1, 574, 462);
@@ -63,14 +64,8 @@ function draw() {
   // draw canvas
   canvas.draw();
 
-  // draw tool
-  if (toolbox.selectedTool.draw) {
-    // draw only when mouse is inside canvas
-    if(mouseX > canvas.x && mouseY < canvas.h)
-      toolbox.selectedTool.draw();
-  } else if(toolbox.selectedTool.name != "rds") {
-    alert("it doesn't look like your tool has a draw method!");
-  }
+  if(toolbox.selectedTool && toolbox.selectedTool.draw)
+    toolbox.selectedTool.draw();
 
   if(cImg) {
     image(cImg, canvas.x, canvas.y);
@@ -84,31 +79,12 @@ function keyPressed() {
 }
 
 function mouseReleased() {
-  if(mouseX < 63 && mouseY > 223) {
-    var colors = toolbox.palette.colors;
-    var colorsn = colors.length;
-
-    for(var i = 0; i < colorsn; i++) {
-      var ci = colorsn-i-1;
-      var bx = 6;
-      var by = 250+14*i;
-
-      // select bg color
-      if(mouseX > bx &&
-	 mouseX < bx+18 &&
-	 mouseY > by &&
-	 mouseY < by+14) {
-	toolbox.palette.cur_bg = ci;
-      }
-
-      // select fg color
-      if(mouseX > bx+34 &&
-	 mouseX < bx+50 &&
-	 mouseY > by &&
-	 mouseY < by+14) {
-	toolbox.palette.cur_fg = ci;
-      }
-    }
+  var hit = toolbox.palette.swatchAt(mouseX, mouseY);
+  if(hit) {
+    if(hit.which == 'bg')
+      toolbox.palette.cur_bg = hit.index;
+    else
+      toolbox.palette.cur_fg = hit.index;
   }
 
   if(mouseX < 63 && mouseY < 223) {
@@ -149,4 +125,9 @@ function drawBorder(x, y, w, h, bg=false, inv=false) {
   line(x, y+h, x+w, y+h);
   line(x+w, y, x+w, y+h);
   pop();
+}
+
+function mouseInCanvas() {
+  return mouseX >= canvas.x && mouseX < canvas.x+canvas.w &&
+         mouseY >= canvas.y && mouseY < canvas.y+canvas.h;
 }

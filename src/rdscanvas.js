@@ -5,6 +5,8 @@ class RDSCanvas {
     this.w = w;
     this.h = h;
     this.canvas = createGraphics(w, h);
+    this.canvas.pixelDensity(1);
+    this.canvas.noSmooth();
     this.canvas.background(0);
   }
 
