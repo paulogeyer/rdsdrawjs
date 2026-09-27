@@ -6,9 +6,12 @@ var HEIGHT = 480;
 var STATUS_MSG;
 var canvas;
 var cImg = undefined;
+var viewScale = 1;
+var viewX = 0;
+var viewY = 0;
 
 function preload() {
-  fontIBM = loadFont('Px437_IBM_DOS_ISO8.ttf');
+  fontIBM = loadFont('VT323-Regular.ttf');
 
   toolbox = new Toolbox(ui);
   toolbox.palette = new Palette(0,223);
@@ -30,55 +33,81 @@ function preload() {
 
 function setup() {
   pixelDensity(1);
-  ui = createCanvas(WIDTH, HEIGHT);
-  noSmooth();
-  // disable right-click context menu
+  ui = createCanvas(windowWidth, windowHeight);
   ui.elt.addEventListener("contextmenu", (e) => e.preventDefault());
   canvas = new RDSCanvas(65, 1, 574, 462);
 }
 
-function draw() {
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
 
+function fitView() {
+  viewScale = Math.min(width/WIDTH, height/HEIGHT);
+  viewX = (width-WIDTH*viewScale)/2;
+  viewY = (height-HEIGHT*viewScale)/2;
+}
+
+function applyPointer() {
+  var elt = ui.elt;
+  var rect = elt.getBoundingClientRect();
+  var rx = elt.scrollWidth/width || 1;
+  var ry = elt.scrollHeight/height || 1;
+  var sx = (winMouseX-rect.left)/rx;
+  var sy = (winMouseY-rect.top)/ry;
+  mouseX = (sx-viewX)/viewScale;
+  mouseY = (sy-viewY)/viewScale;
+}
+
+function draw() {
+  fitView();
+  applyPointer();
   background(0);
+  push();
+  translate(viewX, viewY);
+  scale(viewScale);
+
   toolbox.draw();
 
   STATUS_MSG = 'RDSdrawJS V0.1 - (C) Paulo Geyer 2023';
-  for(var i = 0; i < toolbox.tools.length; i++) {
+  for(var i = 0; i < toolbox.tools.length; i++)
     toolbox.tools[i].mouseOver();
-  }
 
   toolbox.palette.draw();
 
   push();
   noStroke();
   fill(255);
-  drawBorder(65, height-18, width-129, 17, true);
   textFont(fontIBM);
-  textSize(11);
-  text(STATUS_MSG, 75, height-6);
-  drawBorder(width-62, height-18, 61, 17, true);
-  textSize(12);
-  text('ROUND', width-50, height-6);
+  textAlign(LEFT, BASELINE);
+  drawBorder(65, HEIGHT-18, WIDTH-129, 17, true);
+  textSize(16);
+  text(STATUS_MSG, 75, HEIGHT-4);
+  drawBorder(WIDTH-62, HEIGHT-18, 61, 17, true);
+  textSize(16);
+  text('ROUND', WIDTH-56, HEIGHT-4);
   pop();
 
-  // draw canvas
   canvas.draw();
 
   if(toolbox.selectedTool && toolbox.selectedTool.draw)
     toolbox.selectedTool.draw();
 
   if(cImg) {
+    drawingContext.imageSmoothingEnabled = false;
     image(cImg, canvas.x, canvas.y);
   }
+  pop();
 }
 
 function keyPressed() {
-  // check if current tool has a keyPressed method, call it if exists
   if(toolbox.selectedTool.keyPressed)
     toolbox.selectedTool.keyPressed();
 }
 
 function mouseReleased() {
+  fitView();
+  applyPointer();
   var hit = toolbox.palette.swatchAt(mouseX, mouseY);
   if(hit) {
     if(hit.which == 'bg')
@@ -91,12 +120,11 @@ function mouseReleased() {
     for(var i = 0; i < toolbox.tools.length; i++) {
       var tool = toolbox.tools[i];
       if(mouseX > tool.x && mouseX < tool.x+31 &&
-	 mouseY > tool.y && mouseY < tool.y+31) {
-	if(tool.click) {
-	  tool.click();
-	} else {
-	  toolbox.selectTool(toolbox.tools[i]);
-	}
+         mouseY > tool.y && mouseY < tool.y+31) {
+        if(tool.click)
+          tool.click();
+        else
+          toolbox.selectTool(tool);
       }
     }
   }
@@ -104,7 +132,6 @@ function mouseReleased() {
 
 function drawBorder(x, y, w, h, bg=false, inv=false) {
   push();
-  // invert colors
   if(inv) {
     var l2 = color(0,40,170);
     var l1 = color(0,125,255);
@@ -114,7 +141,6 @@ function drawBorder(x, y, w, h, bg=false, inv=false) {
   }
 
   fill(0, 28, 255);
-  // add blue background
   if(bg)
     rect(x, y, w, h);
   stroke(l1);

@@ -7,16 +7,17 @@ class Toolbox {
 
   draw() {
     fill(0, 28, 255);
-    // rect(0, 0, 70, HEIGHT);
+    noStroke();
     if(this.tools.length > 0) {
+      drawingContext.imageSmoothingEnabled = false;
       for(var i = 0; i < this.tools.length; i++) {
-	image(this.tools[i].icon, this.tools[i].x, this.tools[i].y);
-	if(this.tools[i] == this.selectedTool && this.selectedTool.name != "rds") {
-	  stroke('red');
-	  strokeWeight(2);
-	  noFill();
-	  rect(this.tools[i].x, this.tools[i].y, 31, 31);
-	}
+        image(this.tools[i].icon, this.tools[i].x, this.tools[i].y);
+        if(this.tools[i] == this.selectedTool && this.selectedTool.name != "rds") {
+          stroke(255, 0, 0);
+          strokeWeight(2);
+          noFill();
+          rect(this.tools[i].x, this.tools[i].y, 31, 31);
+        }
       }
     }
   }

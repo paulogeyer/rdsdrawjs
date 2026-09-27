@@ -28,56 +28,74 @@ class Palette {
     this.cur_bg = 7;
   }
 
+  layout(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.pw = w;
+    this.ph = h;
+    var n = this.colors.length;
+    this.header = h*25/256;
+    this.pitch = (h-this.header)/n;
+    this.button_xoffset = w*5/63;
+    this.button_width = w*18/63;
+    this.button_height = this.pitch*10/14;
+    this.button_yoffset = this.header;
+    this.fgx = w*39/63;
+    this.labelSize = Math.max(8, w*11/63);
+  }
+
   draw() {
     var colorn = this.colors.length;
+    var w = this.pw || 63;
+    var h = this.ph || 256;
+    var pitch = this.pitch || 14;
+    var header = this.header || 25;
+    var bw = this.button_width;
+    var bh = this.button_height;
+    var bgx = this.x+this.button_xoffset;
+    var fgx = this.x+(this.fgx || 39);
 
     fill(0, 28, 255);
     noStroke();
-    // rect(this.x, this.y, 63, 236);
-    rect(this.x, this.y, 63, 256);
-    drawBorder(this.x, this.y, 63, 256);
+    rect(this.x, this.y, w, h);
+    drawBorder(this.x, this.y, w, h);
     fill(255);
     textFont(fontIBM);
-    text("BG", this.x+10, this.y+15);
-    text("FG", this.x+42, this.y+15);
+    textSize(this.labelSize || 11);
+    textAlign(LEFT, BASELINE);
+    text("BG", this.x+w*10/63, this.y+header*0.7);
+    text("FG", this.x+w*42/63, this.y+header*0.7);
 
     for(var i = 0; i < colorn; i++) {
       var ci = colorn-i-1;
+      var by = this.y+header+pitch*i;
       fill(255);
       noStroke();
-      text(this.colors[ci][0], 28, this.y+33+14*i);
+      textAlign(CENTER, CENTER);
+      text(this.colors[ci][0], this.x+w/2, by+bh/2);
 
       fill(this.colors[ci][1]);
       noStroke();
-      rect(this.x+this.button_xoffset, this.y+this.button_yoffset+14*i,
-	   this.button_width, this.button_height);
-      rect(this.x+2*this.button_xoffset+29,
-	   this.y+this.button_yoffset+14*i,
-	   this.button_width, this.button_height);
+      rect(bgx, by, bw, bh);
+      rect(fgx, by, bw, bh);
 
       if(ci == this.cur_bg) {
-	stroke(255,0,0);
-	noFill();
-	rect(this.x+this.button_xoffset, this.y+this.button_yoffset+14*i,
-	     this.button_width, this.button_height);
+        stroke(255, 0, 0);
+        noFill();
+        rect(bgx, by, bw, bh);
       } else {
-	drawBorder(this.x+this.button_xoffset,
-		   this.y+this.button_yoffset+14*i,
-		   this.button_width, this.button_height, false, true);
+        drawBorder(bgx, by, bw, bh, false, true);
       }
 
       if(ci == this.cur_fg) {
-	stroke(255,0,0);
-	noFill();
-	rect(this.x+2*this.button_xoffset+29,
-	     this.y+this.button_yoffset+14*i,
-	     this.button_width, this.button_height);
+        stroke(255, 0, 0);
+        noFill();
+        rect(fgx, by, bw, bh);
       } else {
-	drawBorder(this.x+2*this.button_xoffset+29,
-		   this.y+this.button_yoffset+14*i,
-		   this.button_width, this.button_height, false, true);
+        drawBorder(fgx, by, bw, bh, false, true);
       }
     }
+    textAlign(LEFT, BASELINE);
   }
 
   range_ids() {
@@ -111,16 +129,20 @@ class Palette {
 
   swatchAt(mx, my) {
     var n = this.colors.length;
+    var pitch = this.pitch || 14;
+    var header = this.header || this.button_yoffset;
+    var bw = this.button_width;
+    var bh = this.button_height;
+    var bgx = this.x+this.button_xoffset;
+    var fgx = this.x+(this.fgx || (2*this.button_xoffset+29));
     for(var i = 0; i < n; i++) {
       var ci = n-i-1;
-      var by = this.y+this.button_yoffset+14*i;
-      var bgx = this.x+this.button_xoffset;
-      var fgx = this.x+2*this.button_xoffset+29;
-      if(my < by || my >= by+this.button_height)
+      var by = this.y+header+pitch*i;
+      if(my < by || my >= by+bh)
         continue;
-      if(mx >= bgx && mx < bgx+this.button_width)
+      if(mx >= bgx && mx < bgx+bw)
         return {which: 'bg', index: ci};
-      if(mx >= fgx && mx < fgx+this.button_width)
+      if(mx >= fgx && mx < fgx+bw)
         return {which: 'fg', index: ci};
     }
     return null;

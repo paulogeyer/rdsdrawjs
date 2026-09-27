@@ -6,11 +6,11 @@ class RDSCanvas {
     this.h = h;
     this.canvas = createGraphics(w, h);
     this.canvas.pixelDensity(1);
-    this.canvas.noSmooth();
     this.canvas.background(0);
   }
 
   draw() {
+    drawingContext.imageSmoothingEnabled = false;
     image(this.canvas, this.x, this.y);
     drawBorder(this.x, this.y, this.w, this.h);
   }
