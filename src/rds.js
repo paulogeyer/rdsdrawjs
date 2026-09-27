@@ -7,12 +7,85 @@ class RDS extends Tool {
 
   constructor() {
     super();
+    this.patterns = ['Black and White', 'Random 4 Cols', 'SuperTrueColor', 'Random TrueCol'];
+    this.patternI = 2;
+    this.invert = false;
+    this.configuring = false;
   }
 
   click() {
     toolbox.selectTool(this);
-    this.active = true;
-    this.render();
+    this.openTypeDialog();
+  }
+
+  openSettings() {
+    toolbox.selectTool(this);
+    this.openTypeDialog();
+  }
+
+  openTypeDialog() {
+    var self = this;
+    openDialog({
+      title: 'TYPE OF RDS-IMAGE',
+      status: 'Select RDS-type using [SPACE] and press [ENTER] when done.',
+      lines: ['PATTERN TYPE:'],
+      radios: this.patterns,
+      radio: this.patternI,
+      checks: [{label: 'invert heights', on: this.invert}],
+      buttons: ['CANCEL'],
+      onAccept: function(d) {
+        self.patternI = d.radio;
+        self.invert = d.checks[0].on;
+        closeDialog();
+        self.active = true;
+        self.render();
+        self.askSave();
+      }
+    });
+  }
+
+  askSave() {
+    var self = this;
+    this.saveName = 'image';
+    openDialog({
+      title: 'SAVE RDS-IMAGE',
+      status: 'Select proper action: [ENTER]=End, [ESC]=Abbort',
+      lines: ['DO YOU WANT TO SAVE', 'THIS RDS-IMAGE?'],
+      buttons: ['SAVE', "DON'T SAVE"],
+      onAccept: function() { self.openSaveName(); },
+      onButton: function(name) {
+        if(name == 'SAVE')
+          self.openSaveName();
+      }
+    });
+  }
+
+  openSaveName() {
+    var self = this;
+    openDialog({
+      title: 'SAVE TARGA RDS-IMAGE',
+      status: 'FILENAME: (.TGA will be added)',
+      fields: [{label: 'FILENAME: ', value: this.saveName}],
+      lines: ['(.TGA will be added)'],
+      buttons: ['SAVE', 'CANCEL'],
+      onKey: function(d) {
+        if(keyCode == 8)
+          self.saveName = self.saveName.slice(0, -1);
+        else if(key && key.length == 1 && key != ' ' && self.saveName.length < 8)
+          self.saveName += key;
+        d.fields[0].value = self.saveName;
+      },
+      onButton: function(name) {
+        if(name == 'SAVE' && cImg)
+          saveTGAImage(cImg, 0, 0, cImg.width, cImg.height, self.saveName);
+        closeDialog();
+      },
+      onAccept: function() {
+        if(cImg)
+          saveTGAImage(cImg, 0, 0, cImg.width, cImg.height, self.saveName);
+        closeDialog();
+      }
+    });
   }
 
   keyPressed() {
@@ -128,7 +201,7 @@ class RDS extends Tool {
         same[x] = x;
 
       for(var x = 0; x < w; x++) {
-        var z = zmap[row+x];
+        var z = this.invert ? 1-zmap[row+x] : zmap[row+x];
         var s = this.separation(z);
         var left = x-(s>>1);
         var right = left+s;
@@ -170,6 +243,14 @@ class RDS extends Tool {
         var sidx;
         var src;
         if(same[x] == x) {
+          var pix = this.patternPixel(x%far, y);
+          if(pix) {
+            op[idx] = pix[0];
+            op[idx+1] = pix[1];
+            op[idx+2] = pix[2];
+            op[idx+3] = 255;
+            continue;
+          }
           sidx = 4*((x%far)%cw+(y%ch)*cw);
           src = cp;
         } else {
@@ -185,5 +266,22 @@ class RDS extends Tool {
 
     outImg.updatePixels();
     cImg = outImg;
+  }
+
+  patternPixel(x, y) {
+    var kind = this.patterns[this.patternI];
+    if(kind == 'SuperTrueColor')
+      return null;
+    var n = (x*374761393+y*668265263)|0;
+    n = Math.imul(n^(n>>>13), 1274126177)>>>0;
+    if(kind == 'Black and White') {
+      var v = (n>>>24) > 127 ? 255 : 0;
+      return [v, v, v];
+    }
+    if(kind == 'Random 4 Cols') {
+      var cols = [[0,0,0],[255,0,0],[0,255,0],[0,0,255]];
+      return cols[(n>>>24)&3];
+    }
+    return [n&255, (n>>>8)&255, (n>>>16)&255];
   }
 }

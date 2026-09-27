@@ -25,6 +25,11 @@ class Poligon extends Tool {
   }
 
   draw() {
+    if(this.waitUp) {
+      if(!mouseIsPressed)
+        this.waitUp = false;
+      return;
+    }
     if(this.step == 0) {
       if(mouseIsPressed && mouseInCanvas()) {
         this.step = 1;
@@ -36,6 +41,7 @@ class Poligon extends Tool {
       return;
     }
 
+    STATUS_MSG = "Click on the polygon's corners, press [ANYKEY] to continue";
     canvas.canvas.updatePixels();
     var preview = this.pts.slice();
     preview.push([mouseX-canvas.x, mouseY-canvas.y]);
@@ -65,6 +71,7 @@ class Poligon extends Tool {
   }
 
   fillShape() {
+    pushUndo();
     var c = this.useBg ? toolbox.palette.cur_bg_color() : toolbox.palette.cur_fg_color();
     canvas.canvas.noStroke();
     canvas.canvas.fill(c);
@@ -77,12 +84,15 @@ class Poligon extends Tool {
   keyPressed() {
     if(this.step != 1)
       return;
-    if(keyCode == 27)
+    if(keyCode == 27) {
       this.cancel();
-    if(keyCode == 13 && this.pts.length >= 3) {
+      return;
+    }
+    if(this.pts.length >= 3) {
       canvas.canvas.updatePixels();
       this.fillShape();
       this.reset();
+      this.waitUp = mouseIsPressed;
     }
   }
 }

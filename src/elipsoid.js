@@ -8,6 +8,11 @@ class Elipsoid extends Circle {
     this.reset();
   }
 
+  setSpan() {
+    this.pt2x = 2*(mouseX-canvas.x-this.pt1x);
+    this.pt2y = 2*(mouseY-canvas.y-this.pt1y);
+  }
+
   drawFinal() {
     var ids = toolbox.palette.range_ids();
 

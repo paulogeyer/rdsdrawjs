@@ -9,6 +9,8 @@ var cImg = undefined;
 var viewScale = 1;
 var viewX = 0;
 var viewY = 0;
+var surfaceType = 'ROUND';
+var undoBuf = null;
 
 function preload() {
   fontIBM = loadFont('VT323-Regular.ttf');
@@ -70,11 +72,30 @@ function draw() {
   toolbox.draw();
 
   STATUS_MSG = 'RDSdrawJS V0.1 - (C) Paulo Geyer 2023';
-  for(var i = 0; i < toolbox.tools.length; i++)
-    toolbox.tools[i].mouseOver();
+  if(activeDialog && activeDialog.status)
+    STATUS_MSG = activeDialog.status;
+  else if(toolbox.selectedTool)
+    STATUS_MSG = toolbox.selectedTool.desc;
+  if(!activeDialog) {
+    for(var i = 0; i < toolbox.tools.length; i++)
+      toolbox.tools[i].mouseOver();
+  }
 
   toolbox.palette.draw();
+  canvas.draw();
 
+  if(toolbox.selectedTool && toolbox.selectedTool.draw && !activeDialog)
+    toolbox.selectedTool.draw();
+
+  if(cImg) {
+    drawingContext.imageSmoothingEnabled = false;
+    image(cImg, canvas.x, canvas.y);
+  }
+  dialogDraw();
+
+  if(!activeDialog && mouseX > WIDTH-62 && mouseX < WIDTH-1 &&
+     mouseY > HEIGHT-18 && mouseY < HEIGHT-1)
+    STATUS_MSG = 'click to change SURFACE TYPE - round/linear';
   push();
   noStroke();
   fill(255);
@@ -84,30 +105,64 @@ function draw() {
   textSize(16);
   text(STATUS_MSG, 75, HEIGHT-4);
   drawBorder(WIDTH-62, HEIGHT-18, 61, 17, true);
-  textSize(16);
-  text('ROUND', WIDTH-56, HEIGHT-4);
+  text(surfaceType, WIDTH-58, HEIGHT-4);
   pop();
-
-  canvas.draw();
-
-  if(toolbox.selectedTool && toolbox.selectedTool.draw)
-    toolbox.selectedTool.draw();
-
-  if(cImg) {
-    drawingContext.imageSmoothingEnabled = false;
-    image(cImg, canvas.x, canvas.y);
-  }
   pop();
 }
 
+function pushUndo() {
+  if(!canvas || !canvas.canvas)
+    return;
+  canvas.canvas.loadPixels();
+  undoBuf = new Uint8ClampedArray(canvas.canvas.pixels);
+}
+
+function doUndo() {
+  if(!undoBuf)
+    return;
+  cImg = undefined;
+  canvas.canvas.loadPixels();
+  canvas.canvas.pixels.set(undoBuf);
+  canvas.canvas.updatePixels();
+  if(toolbox.selectedTool && toolbox.selectedTool.onUndo)
+    toolbox.selectedTool.onUndo();
+}
+
 function keyPressed() {
-  if(toolbox.selectedTool.keyPressed)
+  if(keyCode == 8 && (keyIsDown(CONTROL) || keyIsDown(17))) {
+    doUndo();
+    return;
+  }
+  if(activeDialog) {
+    dialogKey();
+    return;
+  }
+  if(toolbox.selectedTool && toolbox.selectedTool.keyPressed)
     toolbox.selectedTool.keyPressed();
+}
+
+function mousePressed() {
+  applyPointer();
+  if(activeDialog)
+    return;
+  if(toolbox.selectedTool && toolbox.selectedTool.mousePressed)
+    toolbox.selectedTool.mousePressed();
 }
 
 function mouseReleased() {
   fitView();
   applyPointer();
+  if(activeDialog) {
+    dialogClick();
+    return;
+  }
+  if(toolbox.selectedTool && toolbox.selectedTool.mouseReleasedBox && mouseInCanvas())
+    toolbox.selectedTool.mouseReleasedBox();
+  else if(toolbox.selectedTool && toolbox.selectedTool.boxing) {
+    canvas.canvas.updatePixels();
+    toolbox.selectedTool.boxing = false;
+    toolbox.selectedTool.down = false;
+  }
   var hit = toolbox.palette.swatchAt(mouseX, mouseY);
   if(hit) {
     if(hit.which == 'bg')
@@ -116,15 +171,28 @@ function mouseReleased() {
       toolbox.palette.cur_fg = hit.index;
   }
 
+  if(mouseX > WIDTH-62 && mouseX < WIDTH-1 &&
+     mouseY > HEIGHT-18 && mouseY < HEIGHT-1) {
+    surfaceType = surfaceType == 'ROUND' ? 'LINEAR' : 'ROUND';
+    STATUS_MSG = 'SURFACE TYPE: ' + surfaceType;
+  }
+
   if(mouseX < 63 && mouseY < 223) {
     for(var i = 0; i < toolbox.tools.length; i++) {
       var tool = toolbox.tools[i];
       if(mouseX > tool.x && mouseX < tool.x+31 &&
          mouseY > tool.y && mouseY < tool.y+31) {
-        if(tool.click)
-          tool.click();
-        else
+        if(mouseButton == RIGHT && tool.openSettings) {
           toolbox.selectTool(tool);
+          tool.openSettings();
+        } else if(tool.name == 'grabbing') {
+          toolbox.selectTool(tool);
+          tool.setMode(mouseButton == RIGHT ? 'copy' : 'paste');
+        } else if(tool.click) {
+          tool.click();
+        } else {
+          toolbox.selectTool(tool);
+        }
       }
     }
   }

@@ -22,7 +22,17 @@ class Circle extends Tool {
     this.reset();
   }
 
+  keyPressed() {
+    if(keyCode == 27 && this.drawing)
+      this.cancel();
+  }
+
   draw() {
+    if(this.waitUp) {
+      if(!mouseIsPressed)
+        this.waitUp = false;
+      return;
+    }
     if(mouseIsPressed && (this.drawing || mouseInCanvas())) {
       if(this.pt1x == -1) {
         this.pt1x = mouseX-canvas.x;
@@ -30,8 +40,7 @@ class Circle extends Tool {
         this.drawing = true;
         canvas.canvas.loadPixels();
       } else {
-        this.pt2x = 2*(mouseX-canvas.x-this.pt1x);
-        this.pt2y = 2*(mouseY-canvas.y-this.pt1y);
+        this.setSpan();
         canvas.canvas.updatePixels();
         canvas.canvas.stroke(255);
         canvas.canvas.strokeWeight(1);
@@ -44,10 +53,20 @@ class Circle extends Tool {
       if(this.pt2x != undefined)
         this.drawFinal();
       this.reset();
+      this.waitUp = mouseIsPressed;
     }
   }
 
+  setSpan() {
+    var dx = mouseX-canvas.x-this.pt1x;
+    var dy = mouseY-canvas.y-this.pt1y;
+    var d = 2*Math.hypot(dx, dy);
+    this.pt2x = d;
+    this.pt2y = d;
+  }
+
   drawFinal() {
+    pushUndo();
     canvas.canvas.noStroke();
     if(mouseButton == RIGHT)
       canvas.canvas.fill(toolbox.palette.colors[toolbox.palette.cur_bg][1]);
